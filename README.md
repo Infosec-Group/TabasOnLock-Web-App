@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TabasOnLock  
+A simple barber shop scheduling and reservation system built with **Next.js**, **React**, **TailwindCSS**, **React Hook Form**, **Zod**, and **TanStack Query**.
 
-## Getting Started
+This project is created as a school activity for CTINASSL - Information Assurance and Security.
 
-First, run the development server:
+---
+
+## Features
+
+- Appointment Scheduling
+- User Authentication
+- Barber Service Selection
+- Date & Time Picker for Reservations
+- Responsive UI
+- Modern Next.js App Router
+- TailwindCSS Styling
+- Form Validation with Zod
+- API Data Fetching & Caching with TanStack Query
+
+---
+
+## Tech Stack
+
+### **Frontend**
+- **Next.js 16** — App Router, fullstack React framework  
+- **React 19**  
+- **TailwindCSS 4** — Utility-first styling  
+- **Lucide React** — Icon set  
+- **clsx + class-variance-authority + tailwind-merge** — Class handling utilities  
+- **React Hook Form** — Form state management  
+- **Zod** — Schema validation  
+
+### **Data Fetching**
+- **@tanstack/react-query** — Server state management, caching, and API fetching  
+
+### **Dev Tools**
+- **TypeScript 5**  
+- **ESLint 9**  
+- **Tailwind PostCSS**  
+- **tw-animate-css** — Tailwind animation utilities  
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/<your-username>/tabas-on-lock.git
+cd tabas-on-lock
+```
+
+Installing dependencies:
+```bash
+npm install
+```
+
+## Development
+
+Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Contributions are welcome!  
+Feel free to open issues or submit pull requests.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is for educational purposes only.  
+You may modify and reuse the code freely for personal or school use.
