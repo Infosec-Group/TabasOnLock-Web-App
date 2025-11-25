@@ -1,3 +1,31 @@
 * {
   box-sizing: border-box;
 }
+
+.default-button {
+    height: 2.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    border-radius: 6px; /* medium-screen size  */
+    outline-style: none;
+    font-size: 14px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.75rem;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.card-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
