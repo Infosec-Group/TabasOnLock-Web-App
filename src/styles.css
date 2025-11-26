@@ -3,48 +3,63 @@
 }
 
 .default-button {
-    height: 2.5rem;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    border-radius: 6px; /* medium-screen size  */
-    outline-style: none;
-    font-size: 14px;
+  height: 2.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: 6px; /* medium-screen size  */
+  outline-style: none;
+  font-size: 14px;
 }
 
 .card {
-    display: flex;
-    flex-direction: column;
-    border-radius: 0.75rem;
-    gap: 1.5rem;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.75rem;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.card-header {
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-template-rows: auto auto;
+  align-items: start;
+  gap: 0.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.card-title {
+  font-weight: 600;
+  line-height: 1;
 }
 
 .card-content {
-    padding-left: 2rem;
-    padding-right: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .card-footer {
-    display: flex;
-    align-items: center;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .badge {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: calc(infinity * 1px);
-    padding: 0.025rem 0.5rem;
-    width: fit-content;
-    flex-shrink: 0;
-    gap: 0.5rem;
-    overflow: hidden;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: calc(infinity * 1px);
+  padding: 0.025rem 0.5rem;
+  width: fit-content;
+  flex-shrink: 0;
+  gap: 0.5rem;
+  overflow: hidden;
 }
