@@ -1,20 +1,21 @@
 # TabasOnLock  
 A simple barber shop scheduling and reservation system built with **React**, **TailwindCSS**, **React Hook Form**, **Yup**, and **TanStack Query**.
 
-This project is created as a school activity for CTINASSL - Information Assurance and Security.
+A simple barber shop scheduling and reservation system built using HTML, CSS, and JavaScript.
+Originally developed as a school activity for CTINASSL – Information Assurance and Security, this project demonstrates secure appointment handling, basic user interactions, and clean UI design without the use of frontend frameworks.
 
 ---
 
 ## Features
 
 - Appointment Scheduling
-- User Authentication
+- Basic user login simulation (non-production)
 - Barber Service Selection
-- Date & Time Picker for Reservations
+- Date & time picker for reservations
 - Responsive UI
+- Modular and maintainable vanilla JS
 - TailwindCSS Styling
-- Form Validation with Yup
-- API Data Fetching & Caching with TanStack Query
+- Clean and reusable CSS components
 
 ---
 
@@ -50,18 +51,7 @@ cd TabasOnLock-Web-App
 cd frontend
 ```
 
-Installing dependencies:
-```bash
-npm install
-```
-
-## Development
-
-Start the dev server:
-
-```bash
-npm run dev
-```
+No additional dependencies are required—simply open the project.
 
 ---
 
