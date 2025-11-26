@@ -34,7 +34,7 @@ function cardHTML(s) {
     </div>
 
     <div class="card-footer pt-0">
-      <button class="default-button w-full bg-primary rounded-md" data-id="${s.id}">Book with ${s.name}</button>
+      <button class="default-button w-full bg-primary rounded-md hover:bg-primary/90" data-id="${s.id}">Book with ${s.name}</button>
     </div>
   </div>
   `;
