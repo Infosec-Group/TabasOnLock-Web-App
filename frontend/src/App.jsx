@@ -4,13 +4,14 @@ import NotFound from "./pages/NotFound";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import StylistSelection from "./pages/StylistSelection";
+import AppLayout from "./components/AppLayout";
 
 export default function App() {
   const router = createBrowserRouter([
     { index: true, element: <MainPage /> },
     {
       path: "/",
-      element: <MainPage />,
+      element: <AppLayout />,
       children: [
         { path: "stylists", element: <StylistSelection /> },
       ]
