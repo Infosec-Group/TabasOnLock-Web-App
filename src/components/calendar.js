@@ -25,8 +25,8 @@ export function createCalendar(container, {
     // header / nav
     const header = document.createElement('div');
     header.className = 'flex items-center justify-between mb-3';
-    const prev = button('‹', 'text-dark-fg hover:bg-accent/10');
-    const next = button('›', 'text-dark-fg hover:bg-accent/10');
+    const prev = button('‹', 'text-dark-fg hover:bg-secondary/10 cursor-pointer');
+    const next = button('›', 'text-dark-fg hover:bg-secondary/10 cursor-pointer');
     const title = document.createElement('div');
     title.className = 'font-medium text-sm';
     title.textContent = current.toLocaleString(locale, { month: 'long', year: 'numeric' });
@@ -82,7 +82,7 @@ export function createCalendar(container, {
       btn.type = 'button';
       btn.className = [
         'w-full h-10 rounded-md flex items-center justify-center text-sm',
-        isSelected ? 'bg-primary text-primary-foreground' : 'hover:bg-accent/10',
+        isSelected ? 'bg-primary text-primary-foreground' : 'hover:bg-secondary/10',
         isDisabled ? 'opacity-50 pointer-events-none' : 'cursor-pointer'
       ].join(' ');
 
