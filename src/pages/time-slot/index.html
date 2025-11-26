@@ -100,37 +100,18 @@
         }
       }
     </style>
-    <script type="module">
-      import { createCalendar } from '../../utils/calendar.js';
-
-      const root = document.getElementById('calendar-root');
-      const selectedLabel = document.getElementById('selected-date');
-
-      const cal = createCalendar(root, {
-        selected: null,
-        onSelect(date) {
-          selLabel.textContent = date.toDateString();
-          // navigate or store selected date for booking flow
-          console.log('selected date', date.toISOString());
-        },
-        disabled(date) {
-          // disable dates before today
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          return date < today;
-        }
-      });
-    </script>
   </head>
   <body>
     <div class="max-w-4xl mx-auto p-6">
       <div class="mb-6">
         <!-- Back Button -->
-        <button
-          class="default-button border hover:bg-accent hover:text-dark-fg mb-8"
-        >
-          Back to Stylists
-        </button>
+        <a href="../stylist-selection/index.html">
+          <button
+            class="default-button border hover:bg-accent hover:text-dark-fg mb-8"
+          >
+            Back to Stylists
+          </button>
+        </a>
 
         <div class="flex items-center space-x-4 mb-6">
           <div
@@ -144,22 +125,141 @@
             <p class="text-muted-foreground">Specialty</p>
           </div>
         </div>
+      </div>
 
-        <div class="grid grid-cols-1 lg:grid:cols-2 gap-8">
-          <div class="card bg-card">
-            <div class="card-header">
-              <div class="card-title flex items-center text-dark-fg">
-                Select Date
-              </div>
+      <div class="grid grid-cols-1 lg:grid:cols-2 gap-8">
+        <!-- Select Date Card -->
+        <div class="card bg-card">
+          <div class="card-header">
+            <div class="card-title flex items-center text-dark-fg">
+              Select Date
             </div>
+          </div>
+          <div class="card-content">
+            <div id="calendar-root" class="bg-primary/10 border rounded-md border-primary p-3 text-dark-fg"></div>
+            <div id="selected-date" class="mt-2 text-sm text-dark-fg"></div>
+          </div>
+        </div>
 
-            <div class="card-content">
-              <div id="calendar-root" class="bg-primary/10 border rounded-md border-primary p-3 text-dark-fg"/>
-              <div id="selected-date" class="mt-2 text-sm text-dark-dark-fg"/>
+        <!-- Available Time Slots Card -->
+        <div class="card bg-card">
+          <div class="card-header">
+            <div class="card-title text-dark-fg">
+              <span>Available Time Slots</span>
+              <div id="selected-date-header" class="text-sm text-dark-fg"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div id="time-slots-root" class="w-full text-dark-fg">
+              <p id="time-slots-placeholder" class="text-center text-dark-muted-fg py-8">
+                Please select a date first
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <script type="module">
+      import { createCalendar } from '../../components/calendar.js';
+
+      const root = document.getElementById('calendar-root');
+      const selectedLabel = document.getElementById('selected-date');
+      const selectedHeader = document.getElementById('selected-date-header');
+      const slotsRoot = document.getElementById('time-slots-root');
+      const slotsPlaceholder = document.getElementById('time-slots-placeholder');
+
+      let selectedDate = null;
+      let selectedTime = '';
+      let availableSlots = [];
+
+      function formatFullDate(d) {
+        return d.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      }
+
+      // returns half-hour slots from 09:00 to 21:00 (inclusive)
+      function getAvailableSlots(stylistId, dateStr) {
+        const times = [];
+        for (let h = 9; h <= 20; h++) {
+          times.push(`${String(h).padStart(2, '0')}:00`);
+          times.push(`${String(h).padStart(2, '0')}:30`);
+        }
+        times.push('21:00'); // end of day slot
+
+        // deterministic availability based on date + stylist id
+        const seed = (dateStr || '') + (stylistId || '');
+        let s = 0;
+        for (const ch of seed) s = (s * 31 + ch.charCodeAt(0)) >>> 0;
+
+        return times.map((t, i) => ({
+          time: t,
+          available: ((s + i) % 4) !== 0 // 75% available
+        }));
+      }
+
+      function renderTimeSlots() {
+        if (!selectedDate) {
+          slotsRoot.innerHTML = '';
+          slotsRoot.appendChild(slotsPlaceholder);
+          return;
+        }
+
+        const grid = document.createElement('div');
+        grid.className = 'grid grid-cols-3 gap-2 max-h-80 overflow-y-auto';
+
+        availableSlots.forEach(slot => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.dataset.time = slot.time;
+          btn.className = [
+            'default-button text-sm w-full justify-center rounded-md',
+            slot.available ? '' : 'opacity-50 pointer-events-none',
+            selectedTime === slot.time ? 'bg-primary text-primary-foreground' : 'border'
+          ].join(' ');
+          btn.textContent = slot.time;
+          grid.appendChild(btn);
+        });
+
+        slotsRoot.innerHTML = '';
+        slotsRoot.appendChild(grid);
+      }
+
+      // event delegation for slot click
+      slotsRoot.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-time]');
+        if (!btn) return;
+        const time = btn.dataset.time;
+        selectedTime = time;
+        renderTimeSlots();
+        console.log('selected time', time, 'for', selectedDate?.toISOString().split('T')[0]);
+      });
+
+      const cal = createCalendar(root, {
+        selected: null,
+        onSelect(date) {
+          selectedDate = date;
+          selectedLabel.textContent = date.toDateString();
+          selectedHeader.textContent = formatFullDate(date);
+          const dateStr = date.toISOString().split('T')[0];
+          
+          // populate availableSlots and reset selectedTime
+          availableSlots = getAvailableSlots('1', dateStr); // replace '1' with actual stylist id if available
+          selectedTime = '';
+          renderTimeSlots();
+          console.log('selected date', dateStr);
+        },
+        disabled(date) {
+          // disable dates before today
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return date < today;
+        }
+      });
+    </script>
   </body>
 </html>
