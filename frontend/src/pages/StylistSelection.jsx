@@ -1,8 +1,18 @@
 import React from "react";
 import StylistCard from "../components/StylistCard";
 import { stylists } from "../mock/mockData";
+import { useBookingStore } from "../stores/useBookingStore";
+import { useNavigate } from "react-router";
 
 export default function StylistSelection() {
+  const { setSelectedStylist } = useBookingStore();
+  const navigate = useNavigate();
+
+  const handleSelectedStylist = (stylist) => {
+    setSelectedStylist(stylist);
+    navigate("/booking");
+  }
+
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="text-center mb-8">
@@ -15,6 +25,7 @@ export default function StylistSelection() {
           <StylistCard 
             key={stylist.id}
             stylist={stylist}
+            onSelect={handleSelectedStylist}
           />
         ))}
       </div>

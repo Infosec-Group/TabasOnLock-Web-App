@@ -3,7 +3,7 @@ import { Clock, PhilippinePeso, Star } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 
-export default function StylistCard({ stylist = {} }) {
+export default function StylistCard({ stylist = {}, onSelect }) {
   const initials = (stylist.name || '')
     .split(' ')
     .map(n => n[0])
@@ -47,7 +47,7 @@ export default function StylistCard({ stylist = {} }) {
 
       <CardFooter className="pt-0">
         <Button
-          onClick={() => onSelect(stylist)}
+          onClick={() => onSelect && onSelect(stylist)}
           className="w-full"
         >
           Book with {stylist.name.split(' ')[0]}
