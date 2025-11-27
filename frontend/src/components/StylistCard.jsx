@@ -1,6 +1,4 @@
-import React from 'react'
 import { Card, CardContent, CardFooter } from './ui/card'
-import { stylists } from '../mock/mockData'
 import { Clock, PhilippinePeso, Star } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
