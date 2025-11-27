@@ -1,11 +1,22 @@
-import { stylists } from "@/mock/mockData"
-import ProgressBar from "../ProgressBar"
-import StylistInfoPanel from "../StylistInfoPanel"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { UserInformationForm } from "./UserInformationForm"
+import { UserInformationForm } from "../components/UserInformationForm";
+import { 
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle 
+} from "../components/ui/card";
+import ProgressBar from "../components/ProgressBar";
+import StylistInfoPanel from "../components/StylistInfoPanel";
+import { useBookingStore } from "@/stores/useBookingStore";
+import { useEffect } from "react";
 
 export default function UserInformation() {
+  const setCurrentStep = useBookingStore((state) => state.setCurrentStep);
+
+  useEffect(() => {
+    setCurrentStep(1);
+  }, [setCurrentStep]);
+
   return (
     <div className="max-w-6xl mx-auto">
       <ProgressBar />
@@ -20,18 +31,6 @@ export default function UserInformation() {
             </CardHeader>
             <CardContent className="space-y-6">
               <UserInformationForm />
-
-              <div className="flex space-x-4 pt-6">
-                <Button
-                  variant="outline"
-                  className="flex-1 h-12"
-                >
-                  Cancel
-                </Button>
-                <Button className="flex-1 h-12">
-                  Confirm
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </div>

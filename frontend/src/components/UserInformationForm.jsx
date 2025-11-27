@@ -1,8 +1,11 @@
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Label } from "../ui/label"
-import { userInfoSchema } from "../../schemas/schemas";
-import { Input } from "../ui/input";
+import { Label } from "./ui/label";
+import { userInfoSchema } from "../schemas/schemas";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Link } from "react-router";
+import { paths } from "../config/paths";
 
 export const UserInformationForm = () => {
   const {
@@ -30,10 +33,10 @@ export const UserInformationForm = () => {
   }
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="first_name" className="flex items-center font-medium">
-          First Name
+          First Name <span className="text-destructive">*</span>
         </Label>
         <Input 
           {...register("first_name")}
@@ -44,7 +47,7 @@ export const UserInformationForm = () => {
             errors.first_name ? "border-destructive" : ""
           }`}
         />
-        {errors.job_name && (
+        {errors.first_name && (
           <span className="text-sm text-destructive">
             {errors.first_name.message}
           </span>
@@ -53,7 +56,7 @@ export const UserInformationForm = () => {
 
       <div className="space-y-2">
         <Label htmlFor="last_name" className="flex items-center font-medium">
-          Last Name
+          Last Name <span className="text-destructive">*</span>
         </Label>
         <Input 
           {...register("last_name")}
@@ -64,7 +67,7 @@ export const UserInformationForm = () => {
             errors.last_name ? "border-destructive" : ""
           }`}
         />
-        {errors.job_name && (
+        {errors.last_name && (
           <span className="text-sm text-destructive">
             {errors.last_name.message}
           </span>
@@ -73,7 +76,7 @@ export const UserInformationForm = () => {
 
       <div className="space-y-2">
         <Label htmlFor="phone_number" className="flex items-center font-medium">
-          Phone Number
+          Phone Number <span className="text-destructive">*</span>
         </Label>
         <Input 
           {...register("phone_number")}
@@ -84,7 +87,7 @@ export const UserInformationForm = () => {
             errors.phone_number ? "border-destructive" : ""
           }`}
         />
-        {errors.job_name && (
+        {errors.phone_number && (
           <span className="text-sm text-destructive">
             {errors.phone_number.message}
           </span>
@@ -93,7 +96,7 @@ export const UserInformationForm = () => {
 
       <div className="space-y-2">
         <Label htmlFor="email" className="flex items-center font-medium">
-          Email Address
+          Email Address <span className="text-destructive">*</span>
         </Label>
         <Input 
           {...register("email")}
@@ -104,12 +107,26 @@ export const UserInformationForm = () => {
             errors.email ? "border-destructive" : ""
           }`}
         />
-        {errors.job_name && (
+        {errors.email && (
           <span className="text-sm text-destructive">
             {errors.email.message}
           </span>
         )}
       </div>
-    </>
+
+      <div className="flex space-x-4 pt-6">
+        <Button
+          variant="outline"
+          className="flex-1 h-12"
+        >
+          <Link to={paths.app.stylists.getHref()}>
+            Cancel
+          </Link>
+        </Button>
+        <Button className="flex-1 h-12">
+          Confirm
+        </Button>
+      </div>
+    </form>
   );
 }

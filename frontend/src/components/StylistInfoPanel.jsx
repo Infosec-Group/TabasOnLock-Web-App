@@ -1,7 +1,7 @@
-import { Clock, PhilippinePeso, Star } from "lucide-react";
 import { useBookingStore } from "../stores/useBookingStore";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { Clock, PhilippinePeso, Star } from "lucide-react";
 
 export default function StylistInfoPanel() {
   const selectedStylist = useBookingStore((state) => state.selectedStylist);

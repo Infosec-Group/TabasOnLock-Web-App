@@ -1,4 +1,3 @@
-import React from "react";
 import StylistCard from "../components/StylistCard";
 import { stylists } from "../mock/mockData";
 import { useBookingStore } from "../stores/useBookingStore";

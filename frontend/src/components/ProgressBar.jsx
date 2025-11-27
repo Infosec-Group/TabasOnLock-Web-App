@@ -1,5 +1,5 @@
-import { Check } from "lucide-react";
 import { useBookingStore } from "../stores/useBookingStore";
+import { Check } from "lucide-react";
 
 const steps = [
   {number: 1, title: "Customer Information"},

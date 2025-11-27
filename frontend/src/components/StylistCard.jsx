@@ -1,7 +1,7 @@
-import { Card, CardContent, CardFooter } from './ui/card'
-import { Clock, PhilippinePeso, Star } from 'lucide-react'
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
+import { Card, CardContent, CardFooter } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Clock, PhilippinePeso, Star } from "lucide-react";
 
 export default function StylistCard({ stylist = {}, onSelect }) {
   const initials = (stylist.name || '')

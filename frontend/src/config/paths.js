@@ -3,4 +3,18 @@ export const paths = {
     getHref: () => '/',
   },
 
+  app: {
+    root: {
+      getHref: () => "/",
+    },
+    stylists: {
+      getHref: () => "/stylists",
+    },
+    bookings: {
+      getHref: () => "/bookings",
+    },
+    reservation: {
+      getHref: () => "/reservation",
+    },
+  }
 };
