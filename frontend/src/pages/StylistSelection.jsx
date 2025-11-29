@@ -17,7 +17,7 @@ export default function StylistSelection() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <Button variant="ghost" onClick={() => navigate(paths.home.getHref())} className="mb-6">
+      <Button variant="ghost" onClick={() => navigate(paths.app.root.getHref())} className="mb-6">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Home
       </Button>

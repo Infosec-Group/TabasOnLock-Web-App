@@ -3,24 +3,28 @@ export const paths = {
     getHref: () => '/',
   },
 
+  auth: {
+    getHref: () => "/auth",
+  },
+
   app: {
     root: {
-      getHref: () => "/",
+      getHref: () => "/tabas",
     },
     stylists: {
-      getHref: () => "/stylists",
+      getHref: () => "/tabas/stylists",
     },
     bookings: {
-      getHref: () => "/booking",
+      getHref: () => "/tabas/booking",
     },
     reservation: {
-      getHref: () => "/reservation",
+      getHref: () => "/tabas/reservation",
     },
     success: {
-      getHref: () => "/success",
+      getHref: () => "/tabas/success",
     },
     reservationList: {
-      getHref: () => "/my-reservation"
+      getHref: () => "/tabas/my-reservation"
     },
   }
 };

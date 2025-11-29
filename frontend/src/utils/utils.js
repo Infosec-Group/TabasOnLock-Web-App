@@ -24,7 +24,9 @@ export const getAvailableSlots = (stylistId, date) => {
 };
 
 export const formatDate = (date) => {
-  return date.toLocaleDateString("en-US", {
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  return dateObj.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
