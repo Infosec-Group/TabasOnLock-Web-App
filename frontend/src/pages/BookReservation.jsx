@@ -4,11 +4,20 @@ import { useBookingStore } from "@/stores/useBookingStore";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProgressBar from "@/components/ProgressBar";
-import { CalendarIcon, Clock } from "lucide-react";
 import { getAvailableSlots } from "@/utils/utils";
 import { Button } from "@/components/ui/button";
 import StylistInfoPanel from "@/components/StylistInfoPanel";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { 
+  AlertDialog,
+  AlertDialogAction, 
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription, 
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle 
+} from "@/components/ui/alert-dialog";
+import { CalendarIcon, Clock } from "lucide-react";
 
 export default function BookReservation() {
   const navigate = useNavigate();
@@ -19,6 +28,9 @@ export default function BookReservation() {
     selectedTime,
     setSelectedDate,
     setSelectedTime,
+    userInfo,
+    addBooking,
+    reset
   } = useBookingStore();
 
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -51,6 +63,27 @@ export default function BookReservation() {
   const handleBookNow = () => {
     if(selectedDate && selectedTime) {
       setShowConfirmDialog(true);
+    }
+  };
+
+  const handleConfirmBooking = () => {
+    if(selectedDate && selectedTime) {
+      const dateStr = selectedDate.toISOString().split("T")[0];
+      
+      const booking = {
+        stylist: selectedStylist,
+        date: dateStr,
+        time: selectedTime,
+        customer: userInfo,
+        price: selectedStylist.price
+      };
+
+      addBooking(booking);
+
+      setShowConfirmDialog(false);
+
+      setCurrentStep(3);
+      navigate("/success");
     }
   }
 
@@ -140,6 +173,7 @@ export default function BookReservation() {
                 Back
               </Button>
               <Button
+                onClick={handleBookNow}
                 disabled={!selectedDate || !selectedTime}
                 className="flex-1 h-12"
               >
@@ -157,7 +191,28 @@ export default function BookReservation() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Your Appointment</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>Please confirm your appointment details:</p>
+              <div className=" border p-4 rounded-lg space-y-2 text-sm">
+                <p><strong>Stylist:</strong> {selectedStylist?.name}</p>
+                <p><strong>Service:</strong> {selectedStylist?.specialty}</p>
+                <p><strong>Date:</strong> {selectedDate && formatDate(selectedDate)}</p>
+                <p><strong>Time:</strong> {selectedTime}</p>
+                <p><strong>Customer:</strong> {userInfo?.first_name} {userInfo?.last_name}</p>
+                <p><strong>Phone:</strong> {userInfo?.phone_number}</p>
+                <p><strong>Email:</strong> {userInfo?.email}</p>
+                <p><strong>Price:</strong> ₱{selectedStylist.price}</p>
+              </div>
+            </AlertDialogDescription>
           </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmBooking}
+            >
+              Confirm Booking
+            </AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

@@ -7,6 +7,7 @@ import StylistSelection from "./pages/StylistSelection";
 import AppLayout from "./components/AppLayout";
 import BookReservation from "./pages/BookReservation";
 import UserInformation from "./pages/UserInformation";
+import BookingSuccess from "./pages/BookingSuccess";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -18,6 +19,7 @@ export default function App() {
         { path: "stylists", element: <StylistSelection /> },
         { path: "booking", element: <UserInformation /> },
         { path: "reservation", element: <BookReservation /> },
+        { path: "success", element: <BookingSuccess /> }
       ]
     },
     { path: "*", element: <NotFound /> },
