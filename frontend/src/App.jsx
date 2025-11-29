@@ -9,12 +9,13 @@ import BookReservation from "./pages/BookReservation";
 import UserInformation from "./pages/UserInformation";
 import BookingSuccess from "./pages/BookingSuccess";
 import ReservationDashboard from "./pages/ReservationDashboard";
+import LandingPage from "./pages/LandingPage";
 
 export default function App() {
   const router = createBrowserRouter([
-    { index: true, element: <MainPage /> },
+    { index: true, element: <LandingPage /> },
     {
-      path: "/",
+      path: "/tabas/",
       element: <AppLayout />,
       children: [
         { path: "stylists", element: <StylistSelection /> },
