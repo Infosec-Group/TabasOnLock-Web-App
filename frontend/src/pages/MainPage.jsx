@@ -5,30 +5,30 @@ import { Link } from "react-router-dom";
 
 export default function MainPage() {
   return (
-    <div class="min-h-screen flex items-center justify-center p-6">
-      <div class="max-w-4xl w-full">
-        <div class="text-center mb-12">
-          <div class="flex items-center justify-center mb-6 gap-4">
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="max-w-4xl w-full">
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center mb-6 gap-4">
             <div className="w-16 h-16 rounded-full flex items-center justify-center bg-primary">
               <Scissors className="w-8 h-8 text-white" />
             </div>
-            <h1 class="text-5xl font-bold font-playfair-display">
+            <h1 className="text-5xl font-bold font-playfair-display">
               TabasOnLock
             </h1>
           </div>
-          <p class="text-xl text-secondary-foreground mb-4">
+          <p className="text-xl text-secondary-foreground mb-4">
             Premium grooming services with expert stylists
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Book Appointment  */}
           <Card className="hover:shadow-lg transition-shadow duration-300">
             <CardContent className="p-8 text-center">
-              <h3 class="text-2xl font-semibold text-gray-900 mb-3 font-rubik">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3 font-rubik">
                 Book Appointment
               </h3>
-              <p class="text-dark-secondary-fg mb-6">
+              <p className="text-dark-secondary-fg mb-6">
                 Schedule your next haircut with our professional stylists
               </p>
               <Button className="w-full">
@@ -42,10 +42,10 @@ export default function MainPage() {
           {/* My Reservation */}
           <Card className="hover:shadow-lg transition-shadow duration-300">
             <CardContent className="p-8 text-center">
-              <h3 class="text-2xl font-semibold text-gray-900 mb-3 font-rubik">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-3 font-rubik">
                 My Reservations
               </h3>
-              <p class="text-dark-secondary-fg mb-6">
+              <p className="text-dark-secondary-fg mb-6">
                 View and manage your upcoming appointments and reservations
               </p>
               <Button variant="outline" className="w-full border-primary">
@@ -56,21 +56,21 @@ export default function MainPage() {
         </div>
 
         {/* Bottom Text */}
-        <div class="mt-12 text-center">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="mt-12 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h4 class="font-semibold text-secondary-foreground mb-2">Expert Stylists</h4>
-              <p class="text-muted-foreground">Professional hair stylists with years of experience</p>
+              <h4 className="font-semibold text-secondary-foreground mb-2">Expert Stylists</h4>
+              <p className="text-muted-foreground">Professional hair stylists with years of experience</p>
             </div>
 
             <div>
-              <h4 class="font-semibold text-secondary-foreground mb-2">Premium Service</h4>
-              <p class="text-muted-foreground">High-quality cuts and styling services</p>
+              <h4 className="font-semibold text-secondary-foreground mb-2">Premium Service</h4>
+              <p className="text-muted-foreground">High-quality cuts and styling services</p>
             </div>
 
             <div>
-              <h4 class="font-semibold text-secondary-foreground mb-2">Easy Booking</h4>
-              <p class="text-muted-foreground">Simple online reservation system</p>
+              <h4 className="font-semibold text-secondary-foreground mb-2">Easy Booking</h4>
+              <p className="text-muted-foreground">Simple online reservation system</p>
             </div>
 
           </div>

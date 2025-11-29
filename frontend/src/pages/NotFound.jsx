@@ -15,7 +15,7 @@ export default function NotFound() {
           <Button asChild>
             <a href={paths.home.getHref()}>Go To Home</a>
           </Button>
-          <Button variant="outline" onClick={() => window.history.back}>
+          <Button variant="outline" onClick={() => window.history.back()}>
             Go Back
           </Button>
         </div>
