@@ -4,10 +4,14 @@ import { Label } from "./ui/label";
 import { userInfoSchema } from "../schemas/schemas";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { paths } from "../config/paths";
+import { useBookingStore } from "@/stores/useBookingStore";
 
 export const UserInformationForm = () => {
+  const navigate = useNavigate();
+  const setUserInfo = useBookingStore((state) => state.setUserInfo);
+
   const {
     register,
     handleSubmit,
@@ -30,6 +34,9 @@ export const UserInformationForm = () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     reset();
+
+    // setUserInfo(userData);
+    navigate(paths.app.reservation.getHref());
   }
 
   return (
