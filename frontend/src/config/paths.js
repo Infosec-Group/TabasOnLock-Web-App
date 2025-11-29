@@ -11,13 +11,16 @@ export const paths = {
       getHref: () => "/stylists",
     },
     bookings: {
-      getHref: () => "/bookings",
+      getHref: () => "/booking",
     },
     reservation: {
       getHref: () => "/reservation",
     },
     success: {
       getHref: () => "/success",
+    },
+    reservationList: {
+      getHref: () => "/my-reservation"
     },
   }
 };
