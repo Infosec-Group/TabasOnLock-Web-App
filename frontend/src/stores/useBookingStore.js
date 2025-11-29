@@ -6,7 +6,7 @@ export const useBookingStore = create(
     (set) => ({
       currentStep: 1,
       selectedStylist: null,
-      selectedDate: new Date(),
+      selectedDate: null,
       selectedTime: null,
       userInfo: null,
       bookings: [],
@@ -48,7 +48,18 @@ export const useBookingStore = create(
     }),
     {
       name: "booking-storage",
-      partialize: (state) => ({ bookings: state.bookings }),
+      partialize: (state) => ({ 
+        bookings: state.bookings,
+        selectedStylist: state.selectedStylist,
+        selectedDate: state.selectedDate?.toISOString(),
+        selectedTime: state.selectedTime,
+        userInfo: state.userInfo,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if(state?.selectedDate) {
+          state.selectedDate = new Date(state.selectedDate);
+        }
+      },
     }
   )
 );
