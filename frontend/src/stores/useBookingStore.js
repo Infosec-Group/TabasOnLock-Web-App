@@ -3,7 +3,7 @@ import { create } from "zustand";
 export const useBookingStore = create((set) => ({
   currentStep: 1,
   selectedStylist: null,
-  selectedDate: null,
+  selectedDate: new Date(),
   selectedTime: null,
 
   setCurrentStep: (step) => set({ currentStep: step }),
@@ -17,7 +17,7 @@ export const useBookingStore = create((set) => ({
   reset: () => set ({
     currentStep: 1,
     selectedStylist: null,
-    selectedDate: null,
+    selectedDate: undefined,
     selectedTime: null
   })
 }));
