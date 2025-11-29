@@ -4,10 +4,14 @@ import { Label } from "./ui/label";
 import { userInfoSchema } from "../schemas/schemas";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { paths } from "../config/paths";
+import { useBookingStore } from "@/stores/useBookingStore";
 
 export const UserInformationForm = () => {
+  const navigate = useNavigate();
+  const setUserInfo = useBookingStore((state) => state.setUserInfo);
+
   const {
     register,
     handleSubmit,
@@ -20,7 +24,7 @@ export const UserInformationForm = () => {
       last_name: "",
       phone_number: "",
       email: "",
-    }
+    },
   });
 
   const onSubmit = async (userData) => {
@@ -30,7 +34,10 @@ export const UserInformationForm = () => {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     reset();
-  }
+
+    setUserInfo(userData);
+    navigate(paths.app.reservation.getHref());
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -38,7 +45,7 @@ export const UserInformationForm = () => {
         <Label htmlFor="first_name" className="flex items-center font-medium">
           First Name <span className="text-destructive">*</span>
         </Label>
-        <Input 
+        <Input
           {...register("first_name")}
           id="first_name"
           type="text"
@@ -58,14 +65,12 @@ export const UserInformationForm = () => {
         <Label htmlFor="last_name" className="flex items-center font-medium">
           Last Name <span className="text-destructive">*</span>
         </Label>
-        <Input 
+        <Input
           {...register("last_name")}
           id="last_name"
           type="text"
           placeholder="Enter your last name"
-          className={`bg-input ${
-            errors.last_name ? "border-destructive" : ""
-          }`}
+          className={`bg-input ${errors.last_name ? "border-destructive" : ""}`}
         />
         {errors.last_name && (
           <span className="text-sm text-destructive">
@@ -78,7 +83,7 @@ export const UserInformationForm = () => {
         <Label htmlFor="phone_number" className="flex items-center font-medium">
           Phone Number <span className="text-destructive">*</span>
         </Label>
-        <Input 
+        <Input
           {...register("phone_number")}
           id="phone_number"
           type="tel"
@@ -98,14 +103,12 @@ export const UserInformationForm = () => {
         <Label htmlFor="email" className="flex items-center font-medium">
           Email Address <span className="text-destructive">*</span>
         </Label>
-        <Input 
+        <Input
           {...register("email")}
           id="email"
           type="email"
           placeholder="example@email.com"
-          className={`bg-input ${
-            errors.email ? "border-destructive" : ""
-          }`}
+          className={`bg-input ${errors.email ? "border-destructive" : ""}`}
         />
         {errors.email && (
           <span className="text-sm text-destructive">
@@ -115,18 +118,14 @@ export const UserInformationForm = () => {
       </div>
 
       <div className="flex space-x-4 pt-6">
-        <Button
-          variant="outline"
-          className="flex-1 h-12"
-        >
-          <Link to={paths.app.stylists.getHref()}>
+        <Link to={paths.app.stylists.getHref()} className="flex-1">
+          <Button variant="outline" className="h-12 w-full">
             Cancel
-          </Link>
-        </Button>
-        <Button className="flex-1 h-12">
-          Confirm
-        </Button>
+          </Button>
+        </Link>
+
+        <Button className="flex-1 h-12">Confirm</Button>
       </div>
     </form>
   );
-}
+};
