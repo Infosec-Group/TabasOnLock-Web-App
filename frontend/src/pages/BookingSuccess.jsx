@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import ProgressBar from "@/components/ProgressBar";
 import { Calendar, CheckCircle, Home } from "lucide-react";
+import { formatDate } from "@/utils/utils";
 
 export default function BookingSuccess() {
   const navigate = useNavigate();
@@ -15,15 +16,6 @@ export default function BookingSuccess() {
     selectedTime,
     userInfo,
   } = useBookingStore();
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -83,6 +75,7 @@ export default function BookingSuccess() {
           {/* Action Buttons */}
           <div className=" mt-8 flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <Button
+              onClick={() => navigate(paths.app.reservationList.getHref())}
               className="flex items-center justify-center"
             >
               <Calendar className="w-4 h-4 mr-2" />

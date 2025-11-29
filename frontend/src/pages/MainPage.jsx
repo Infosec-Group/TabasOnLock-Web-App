@@ -1,9 +1,12 @@
 import { Scissors } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
+import { paths } from "@/config/paths";
 
 export default function MainPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="max-w-4xl w-full">
@@ -31,10 +34,11 @@ export default function MainPage() {
               <p className="text-dark-secondary-fg mb-6">
                 Schedule your next haircut with our professional stylists
               </p>
-              <Button className="w-full">
-                <Link to="/stylists">
-                  Book Now
-                </Link>
+              <Button 
+                className="w-full"
+                onClick={() => navigate(paths.app.stylists.getHref())}
+              >
+                Book Now
               </Button>
             </CardContent>
           </Card>
@@ -48,7 +52,11 @@ export default function MainPage() {
               <p className="text-dark-secondary-fg mb-6">
                 View and manage your upcoming appointments and reservations
               </p>
-              <Button variant="outline" className="w-full border-primary">
+              <Button 
+                variant="outline" 
+                className="w-full border-primary"
+                onClick={() => navigate(paths.app.reservationList.getHref())}
+              >
                 View Reservations
               </Button>
             </CardContent>
