@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { formatDate, getAvailableSlots } from "@/utils/utils";
+import { paths } from "@/config/paths";
 import { useBookingStore } from "@/stores/useBookingStore";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProgressBar from "@/components/ProgressBar";
-import { getAvailableSlots } from "@/utils/utils";
 import { Button } from "@/components/ui/button";
 import StylistInfoPanel from "@/components/StylistInfoPanel";
 import { 
@@ -18,7 +19,6 @@ import {
   AlertDialogTitle 
 } from "@/components/ui/alert-dialog";
 import { CalendarIcon, Clock } from "lucide-react";
-import { paths } from "@/config/paths";
 
 export default function BookReservation() {
   const navigate = useNavigate();
@@ -86,15 +86,6 @@ export default function BookReservation() {
       navigate(paths.app.success.getHref());
     }
   }
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
 
   return (
     <>
