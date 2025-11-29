@@ -16,5 +16,8 @@ export const paths = {
     reservation: {
       getHref: () => "/reservation",
     },
+    success: {
+      getHref: () => "/success",
+    },
   }
 };

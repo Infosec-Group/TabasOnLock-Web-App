@@ -18,6 +18,7 @@ import {
   AlertDialogTitle 
 } from "@/components/ui/alert-dialog";
 import { CalendarIcon, Clock } from "lucide-react";
+import { paths } from "@/config/paths";
 
 export default function BookReservation() {
   const navigate = useNavigate();
@@ -30,7 +31,6 @@ export default function BookReservation() {
     setSelectedTime,
     userInfo,
     addBooking,
-    reset
   } = useBookingStore();
 
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -83,7 +83,7 @@ export default function BookReservation() {
       setShowConfirmDialog(false);
 
       setCurrentStep(3);
-      navigate("/success");
+      navigate(paths.app.success.getHref());
     }
   }
 
