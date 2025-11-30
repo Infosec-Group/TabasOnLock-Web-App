@@ -27,7 +27,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="email" className="flex items-center">
           <Mail className="w-4 h-4 mr-2" />
@@ -84,7 +84,14 @@ export const LoginForm = () => {
         className="w-full h-12 bg-rose-700 hover:bg-rose-600" 
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Logging in..." : "Log in"}
+        {isSubmitting ? (
+          <>
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            Logging In...
+          </>
+        ) : (
+          <>Log In</>
+        )}
       </Button>
     </form>
   );
