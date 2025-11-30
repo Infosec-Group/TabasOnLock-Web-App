@@ -14,3 +14,8 @@ export const userInfoSchema = yup.object().shape({
     .matches(PHONE_REGEX, "Please enter a valid PH phone number")
     .required("Phone number is required")
 })
+
+export const loginSchema = yup.object().shape({
+  email: yup.string().email("Enter a valid email address").required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
