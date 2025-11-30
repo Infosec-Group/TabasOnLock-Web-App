@@ -10,6 +10,7 @@ import UserInformation from "./pages/UserInformation";
 import BookingSuccess from "./pages/BookingSuccess";
 import ReservationDashboard from "./pages/ReservationDashboard";
 import LandingPage from "./pages/LandingPage";
+import AuthPage from "./pages/AuthPage";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -25,6 +26,7 @@ export default function App() {
         { path: "my-reservation", element: <ReservationDashboard /> }
       ]
     },
+    { path: "/auth", element: <AuthPage /> },
     { path: "*", element: <NotFound /> },
   ]);
 
