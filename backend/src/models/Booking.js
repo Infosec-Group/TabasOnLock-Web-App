@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const BookingSchema = new mongoose.Schema({
+const BookingSchema = new Schema({
     Date: { type: Date, required: true },
     Time: { type: String, required: true },
     Customer_ID: { 
-        type: mongoose.Schema.Types.ObjectId, 
+        type: Schema.Types.ObjectId, 
         ref: 'Customer', 
         required: true 
     },
@@ -13,4 +13,4 @@ const BookingSchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model("Booking", BookingSchema);
+export default model("Booking", BookingSchema);
