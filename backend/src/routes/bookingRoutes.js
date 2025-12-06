@@ -1,6 +1,11 @@
 import { Router } from "express";
-import mockAuth from "../middleware/mockAuth";
-import { createBooking, getCustomerBookings, updateBooking, deleteBooking } from "../controllers/bookingController";
+import { mockAuth } from "../middleware/mockAuth.js";
+import { 
+    createBooking, 
+    getCustomerBookings, 
+    updateBooking, 
+    deleteBooking 
+} from "../controllers/bookingController.js";
 
 const router = Router();
 
