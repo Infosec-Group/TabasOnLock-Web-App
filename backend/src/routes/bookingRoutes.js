@@ -1,15 +1,15 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
+import mockAuth from "../middleware/mockAuth";
+import { createBooking, getCustomerBookings, updateBooking, deleteBooking } from "../controllers/bookingController";
 
-const mockAuth = require("../middleware/mockAuth");
-const bookingController = require("../controllers/bookingController");
+const router = Router();
 
 // Apply mock authentication middleware to all booking routes
 router.use(mockAuth);
 
-router.post("/", bookingController.createBooking);
-router.get("/customer/:customerId", bookingController.getCustomerBookings);
-router.put("/:bookingId", bookingController.updateBooking);
-router.delete("/:bookingId", bookingController.deleteBooking);
+router.post("/", createBooking);
+router.get("/customer/:customerId", getCustomerBookings);
+router.put("/:bookingId", updateBooking);
+router.delete("/:bookingId", deleteBooking);
 
-module.exports = router;
+export default router;

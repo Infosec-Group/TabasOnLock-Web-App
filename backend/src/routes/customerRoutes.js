@@ -1,10 +1,11 @@
-const express = require("express");
-const Customer = require("../models/Customer");
-const router = express.Router();
+import { Router } from "express";
+import { findById } from "../models/Customer";
+
+const router = Router();
 
 router.get("/:customerId", async (req, res) => {
     try {
-        const customer = await Customer.findById(req.params.customerId).lean();
+        const customer = await findById(req.params.customerId).lean();
         if (!customer) {
             return res.status(404).json({ message: "Customer not found" });
         }
@@ -16,4 +17,4 @@ router.get("/:customerId", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
