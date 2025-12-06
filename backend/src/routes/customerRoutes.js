@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { findById } from "../models/Customer";
+import Customer from "../models/Customer.js";
 
 const router = Router();
 
 router.get("/:customerId", async (req, res) => {
     try {
-        const customer = await findById(req.params.customerId).lean();
+        const customer = await Customer.findById(req.params.customerId).lean();
         if (!customer) {
             return res.status(404).json({ message: "Customer not found" });
         }
