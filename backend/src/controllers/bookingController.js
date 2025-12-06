@@ -1,11 +1,11 @@
 // import mongoose from "mongoose";
-import Booking, { findOne, find, findById, findByIdAndDelete } from "../models/Booking";
-import asyncHandler from "../middleware/asyncHandler";
+import Booking from "../models/Booking.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
 
 export const createBooking = asyncHandler(async (req, res) => {
     const { Date, Time, Stylist_Id } = req.body;
 
-    const existingBooking = await findOne({
+    const existingBooking = await Booking.findOne({
         Stylist_Id: Stylist_Id,
         Date: Date,
         Time: Time
@@ -27,14 +27,14 @@ export const createBooking = asyncHandler(async (req, res) => {
 });
 
 export const getCustomerBookings = asyncHandler(async (req, res) => {
-    const bookings = await find({ 
+    const bookings = await Booking.find({ 
         Customer_ID: req.params.customerId 
     }).populate("Customer_ID", "First_name Last_name Email");
     res.json(bookings);
 });
 
 export const updateBooking = asyncHandler(async (req, res) => {
-    const booking = await findById(req.params.bookingId);   
+    const booking = await Booking.findById(req.params.bookingId);   
     if (!booking) {
         return res.status(404).json({ message: "Booking not found" });
     }   
@@ -47,7 +47,7 @@ export const updateBooking = asyncHandler(async (req, res) => {
 });
 
 export const deleteBooking = asyncHandler(async (req, res) => {
-    const booking = await findById(req.params.bookingId);
+    const booking = await Booking.findById(req.params.bookingId);
 
     if (!booking) {
         return res.status(404).json({ message: "Booking not found" });
