@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&._]{8,}$/;
+const PHONE_REGEX = /^(09\d{9}|(\+639|639)\d{9})$/;
 
 export const loginSchema = yup.object().shape({
   email: yup.string().email("Enter a valid email address").required("Email is required"),
