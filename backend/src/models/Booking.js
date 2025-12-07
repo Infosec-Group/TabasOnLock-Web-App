@@ -1,16 +1,19 @@
 import { Schema, model } from "mongoose";
 
-const BookingSchema = new Schema({
-    Date: { type: Date, required: true },
-    Time: { type: String, required: true },
-    Customer_ID: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Customer', 
-        required: true 
+const BookingSchema = new Schema(
+  {
+    date: { type: Date, required: true },
+    time: { type: String, required: true },
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: "Customer",
+      required: true,
     },
-    Stylist_Id: { type: String },
-}, {
-    timestamps: true
-});
+    stylistId: { type: String },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 export default model("Booking", BookingSchema);

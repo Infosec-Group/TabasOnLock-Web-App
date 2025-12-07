@@ -1,11 +1,11 @@
 import { Schema, model } from "mongoose";
 
 const CustomerSchema = new Schema({
-    First_name: { type: String, required: true },
-    Last_name: { type: String, required: true },
-    Email: { type: String, required: true, unique: true },
-    Phone_Number: { type: String, required: true },
-    Password_Hash: { type: String, required: true, selected: false },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  phoneNumber: { type: String, required: true },
+  passwordHash: { type: String, required: true, selected: false },
 });
 
 export default model("Customer", CustomerSchema);
