@@ -61,4 +61,4 @@ const loginRequest = (data) => {
 
 const signupRequest = (data) => {
   return api.post("/auth/signup", data, { auth: false });
-}
+};
