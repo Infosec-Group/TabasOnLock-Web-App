@@ -17,12 +17,12 @@ export const SignUpForm = () => {
   } = useForm({
     resolver: yupResolver(userSchema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
+      firstName: "",
+      lastName: "",
       email: "",
-      phone_number: "",
+      phoneNumber: "",
       password: "",
-      confirm_password: "",
+      confirmPassword: "",
     },
   });
 
@@ -33,38 +33,38 @@ export const SignUpForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="first_name" className="flex items-center">
+        <Label htmlFor="firstName" className="flex items-center">
           First Name <span className="text-destructive">*</span>
         </Label>
         <Input
-          id="first_name"
-          {...register("first_name")}
+          id="firstName"
+          {...register("firstName")}
           placeholder="Juan"
-          className={`${errors.first_name ? "border-destructive" : ""}`}
+          className={`${errors.firstName ? "border-destructive" : ""}`}
           required
         />
 
-        {errors.first_name && (
+        {errors.firstName && (
           <span className="text-sm text-destructive">
-            {errors.first_name.message}
+            {errors.firstName.message}
           </span>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="last_name" className="flex items-center">
+        <Label htmlFor="lastName" className="flex items-center">
           Last Name <span className="text-destructive">*</span>
         </Label>
         <Input
-          id="last_name"
-          {...register("last_name")}
+          id="lastName"
+          {...register("lastName")}
           placeholder="Dela Cruz"
-          className={`${errors.last_name ? "border-destructive" : ""}`}
+          className={`${errors.lastName ? "border-destructive" : ""}`}
           required
         />
-        {errors.last_name && (
+        {errors.lastName && (
           <span className="text-sm text-destructive">
-            {errors.last_name.message}
+            {errors.lastName.message}
           </span>
         )}
       </div>
@@ -91,19 +91,19 @@ export const SignUpForm = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phone_number">
+        <Label htmlFor="phoneNumber">
           Contact Number <span className="text-destructive">*</span>
         </Label>
         <Input
-          id="phone_number"
-          {...register("phone_number")}
+          id="phoneNumber"
+          {...register("phoneNumber")}
           placeholder="+639123456789"
-          className={`${errors.phone_number ? "border-destructive" : ""}`}
+          className={`${errors.phoneNumber ? "border-destructive" : ""}`}
           required
         />
-        {errors.phone_number && (
+        {errors.phoneNumber && (
           <span className="text-sm text-destructive">
-            {errors.phone_number.message}
+            {errors.phoneNumber.message}
           </span>
         )}
       </div>
@@ -139,16 +139,16 @@ export const SignUpForm = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirm_password" className="flex items-center">
+        <Label htmlFor="confirmPassword" className="flex items-center">
           Confirm Password
         </Label>
         <div className="relative">
           <Input
-            id="confirm_password"
+            id="confirmPassword"
             type={showPassword ? "text" : "password"}
-            {...register("confirm_password")}
+            {...register("confirmPassword")}
             placeholder="Confirm Password"
-            className={`${errors.confirm_password ? "border-destructive" : ""}`}
+            className={`${errors.confirmPassword ? "border-destructive" : ""}`}
             required
           />
           <Button
@@ -161,9 +161,9 @@ export const SignUpForm = () => {
             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </Button>
         </div>
-        {errors.confirm_password && (
+        {errors.confirmPassword && (
           <span className="text-sm text-destructive">
-            {errors.confirm_password.message}
+            {errors.confirmPassword.message}
           </span>
         )}
       </div>
