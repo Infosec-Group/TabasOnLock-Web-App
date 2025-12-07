@@ -1,13 +1,20 @@
-import { loginSchema } from "../schemas/auth.schemas.js";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
+import { loginSchema } from "../schemas/auth.schemas.js";
+import { useNavigate } from "react-router";
+import { useLogin } from "@/lib/auth.js";
+import { paths } from "@/config/paths.js";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Label } from "../../../components/ui/label";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
+  const login = useLogin({
+    onSuccess: () => navigate(() => paths.app.root.getHref())
+  });
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -22,12 +29,15 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = () => {
-    // Login Logic
+  const onSubmit = (data) => {
+    login.mutate({
+      email: data.email,
+      password: data.password,
+    })
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="email" className="flex items-center">
           <Mail className="w-4 h-4 mr-2" />

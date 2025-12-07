@@ -1,15 +1,22 @@
+import { useState } from "react";
+import { useSignup } from "@/lib/auth.js";
+import { useNavigate } from "react-router";
 import { userSchema } from "../schemas/auth.schemas.js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Label } from "../../../components/ui/label";
 import { Input } from "../../../components/ui/input";
-import { useState } from "react";
 import { Button } from "../../../components/ui/button";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { paths } from "@/config/paths.js";
 
 export const SignUpForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const signup = useSignup({
+    onSuccess: () => navigate(() => paths.auth.getHref())
+  });
 
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -26,12 +33,13 @@ export const SignUpForm = () => {
     },
   });
 
-  const onSubmit = () => {
-    // Sign up logic
+  const onSubmit = (data) => {
+    const { confirmPassword, ...payload } = data;
+    signup.mutate(payload);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="firstName" className="flex items-center">
           First Name <span className="text-destructive">*</span>
