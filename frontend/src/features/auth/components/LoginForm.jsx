@@ -2,10 +2,10 @@ import { loginSchema } from "@/schemas/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Label } from "./ui/label";
+import { Label } from "../../../components/ui/label";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
