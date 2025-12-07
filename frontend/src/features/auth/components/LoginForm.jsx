@@ -1,4 +1,4 @@
-import { loginSchema } from "@/schemas/schemas";
+import { loginSchema } from "../schemas/auth.schemas.js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
