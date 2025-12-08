@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { formatDate, getAvailableSlots } from "@/utils/utils";
 import { paths } from "@/config/paths";
+import { useUser } from "@/lib/auth";
+import { useCreateBooking } from "@/features/bookings/api/bookingApi";
+import { toast } from "sonner";
 import { useBookingStore } from "@/stores/useBookingStore";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +25,9 @@ import { CalendarIcon, Clock } from "lucide-react";
 
 export default function BookReservation() {
   const navigate = useNavigate();
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const { data: user } = useUser();
   const {
     setCurrentStep,
     selectedStylist,
@@ -31,10 +37,21 @@ export default function BookReservation() {
     setSelectedTime,
     userInfo,
     addBooking,
+    reset: resetBooking
   } = useBookingStore();
 
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const createBooking = useCreateBooking({
+    onSuccess: (data) => {
+      toast.success("Booking confirmed successfully!");
+      setShowConfirmDialog(false);
+      setCurrentStep(3);
+      resetBooking();
+      navigate(paths.app.success.getHref());
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to create booking");
+    }
+  });
 
   useEffect(() => {
     setCurrentStep(2);
@@ -67,25 +84,16 @@ export default function BookReservation() {
   };
 
   const handleConfirmBooking = () => {
-    if(selectedDate && selectedTime) {
-      const dateStr = selectedDate.toISOString().split("T")[0];
-      
-      const booking = {
-        stylist: selectedStylist,
-        date: dateStr,
+    if(selectedDate && selectedTime && selectedStylist) {
+      const bookingData = {
+        date: selectedDate.toISOString().split("T")[0],
         time: selectedTime,
-        customer: userInfo,
-        price: selectedStylist.price
+        stylistId: selectedStylist.id || selectedStylist.name,
       };
 
-      addBooking(booking);
-
-      setShowConfirmDialog(false);
-
-      setCurrentStep(3);
-      navigate(paths.app.success.getHref());
+      createBooking.mutate(bookingData);
     }
-  }
+  };
 
   return (
     <>
@@ -158,7 +166,7 @@ export default function BookReservation() {
             <div className="flex space-x-4">
               <Button
                 variant="outline"
-                onClick={() => navigate("/booking")}
+                onClick={() => window.history.back()}
                 className="flex-1 h-12"
               >
                 Back
@@ -200,8 +208,9 @@ export default function BookReservation() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmBooking}
+              disabled={!selectedDate || !selectedTime || createBooking.isPending}
             >
-              Confirm Booking
+              {createBooking.isPending ? "Confirming..." : "Confirm Booking"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

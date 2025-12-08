@@ -1,14 +1,14 @@
-import { UserInformationForm } from "../components/UserInformationForm";
+import { useEffect } from "react";
+import { useBookingStore } from "@/stores/useBookingStore";
 import { 
   Card,
   CardContent,
   CardHeader,
   CardTitle 
-} from "../components/ui/card";
-import ProgressBar from "../components/ProgressBar";
-import StylistInfoPanel from "../components/StylistInfoPanel";
-import { useBookingStore } from "@/stores/useBookingStore";
-import { useEffect } from "react";
+} from "@/components/ui/card";
+import ProgressBar from "@/components/ProgressBar";
+import StylistInfoPanel from "@/components/StylistInfoPanel";
+import { UserInformationForm } from "@/features/bookings/components/UserInformationForm";
 
 export default function UserInformation() {
   const setCurrentStep = useBookingStore((state) => state.setCurrentStep);

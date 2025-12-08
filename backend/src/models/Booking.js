@@ -10,6 +10,7 @@ const BookingSchema = new Schema(
       required: true,
     },
     stylistId: { type: String },
+    stylistName: { type: String, required: true },
   },
   {
     timestamps: true,

@@ -17,7 +17,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="bg-background/80 backdrop-blur-sm border-b border-primary sticky top-0 z-10">
+    <header className="bg-linear-to-r from-background/80 to-rose-600/40 backdrop-blur-sm border-b border-primary sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
