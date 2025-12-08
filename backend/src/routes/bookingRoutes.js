@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { mockAuth } from "../middleware/mockAuth.js";
 import {
   createBooking,
   getCustomerBookings,
-  updateBooking,
   deleteBooking,
   cancelBooking,
+  rescheduleBooking,
 } from "../controllers/bookingController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -16,8 +15,8 @@ const router = Router();
 
 router.post("/", protect, createBooking);
 router.get("/customer/:customerId", protect, getCustomerBookings);
-router.put("/:bookingId", protect, updateBooking);
 router.patch("/:bookingId/cancel", protect, cancelBooking);
+router.patch("/:bookingId/reschedule", protect, rescheduleBooking);
 router.delete("/:bookingId", protect, deleteBooking);
 
 export default router;
