@@ -1,19 +1,31 @@
 import { useState } from "react";
 import { useSignup } from "@/lib/auth.js";
+import { paths } from "@/config/paths.js";
 import { useNavigate } from "react-router";
-import { userSchema } from "../schemas/auth.schemas.js";
+import { userSchema } from "@/features/auth/schemas/auth.schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { Label } from "../../../components/ui/label";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { paths } from "@/config/paths.js";
+import { toast } from "sonner";
 
 export const SignUpForm = () => {
   const navigate = useNavigate();
   const signup = useSignup({
-    onSuccess: () => navigate(() => paths.auth.getHref())
+    onSuccess: () => {
+      navigate(paths.auth.getHref());
+      toast.success("Sign up Successfully! Please go to Login tab to Sign in");
+    },
+    onError: (error) => {
+      let message = error?.message || error?.response?.data?.message || "Sign up failed";
+      if (message.includes("Internal Server Error")) {
+        toast.error("Internal Server Error. Please try again later.");
+      } else {
+        toast.error(message);
+      }
+    }
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -34,8 +46,7 @@ export const SignUpForm = () => {
   });
 
   const onSubmit = (data) => {
-    const { confirmPassword, ...payload } = data;
-    signup.mutate(payload);
+    signup.mutate(data);
   };
 
   return (
