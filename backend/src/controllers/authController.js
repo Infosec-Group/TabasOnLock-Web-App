@@ -2,6 +2,7 @@ import { asyncHandler } from "../middleware/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import Customer from "../models/Customer.js";
 import { generateToken } from "../utils/generateToken.js";
+import { request } from "express";
 
 export const signup = asyncHandler(async (req, res) => {
   const { email, password, confirmPassword, ...rest } = req.body;
@@ -73,3 +74,14 @@ export const login = asyncHandler(async (req, res) => {
     token: generateToken({ id: customer._id }),
   });
 });
+
+export const getUser = asyncHandler(async (request, response) => {
+  const customer = await Customer.findById(request.user.id).select("-passwordHash -__v");
+
+  if(!customer) {
+    response.status(404);
+    throw new Error("User not found");
+  }
+
+  response.json({ user: customer });
+})

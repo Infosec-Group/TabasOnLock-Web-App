@@ -20,7 +20,7 @@ export const useUser = () =>
     enabled: Boolean(localStorage.getItem("access_token")),
   });
 
-export const useLogin = ({ onSuccess } = {}) => {
+export const useLogin = ({ onSuccess, onError } = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -29,6 +29,9 @@ export const useLogin = ({ onSuccess } = {}) => {
       localStorage.setItem("access_token", response.token);
       queryClient.invalidateQueries(userQueryKey);
       onSuccess?.();
+    },
+    onError: (error) => {
+      onError?.(error);
     },
   });
 };

@@ -38,7 +38,13 @@ async function request(url, options = {}) {
   });
 
   if (!response.ok) {
-    const message = (await response.json()).message || response.statusText;
+    let message = "Unknown error";
+    try {
+      const data = await response.json();
+      message = data.message || data.error || response.statusText
+    } catch (error) {
+      message = response.statusText;
+    }
     throw new Error(message);
   }
 

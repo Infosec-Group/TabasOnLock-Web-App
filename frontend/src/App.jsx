@@ -11,13 +11,18 @@ import BookingSuccess from "./pages/BookingSuccess";
 import ReservationDashboard from "./pages/ReservationDashboard";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   const router = createBrowserRouter([
     { index: true, element: <LandingPage /> },
     {
       path: "/tabas/",
-      element: <AppLayout />,
+      element: (
+        <ProtectedRoute>
+          <AppLayout />
+        </ProtectedRoute>
+      ),
       children: [
         { path: "stylists", element: <StylistSelection /> },
         { path: "booking", element: <UserInformation /> },

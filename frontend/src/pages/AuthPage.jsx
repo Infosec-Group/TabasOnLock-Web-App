@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { paths } from "@/config/paths";
-import { useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,10 +8,16 @@ import { ArrowLeft, User } from "lucide-react";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { SignUpForm } from "@/features/auth/components/SignUpForm";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/lib/auth";
+import PageLoader from "@/components/PageLoader";
 
 export default function AuthPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("login");
+  const { data: user, isLoading } = useUser();
+
+  if (isLoading) return <PageLoader />;
+  if (user) return <Navigate to="/tabas" replace />;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">

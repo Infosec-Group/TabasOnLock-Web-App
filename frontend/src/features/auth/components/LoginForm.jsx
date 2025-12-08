@@ -5,17 +5,40 @@ import { useLogin } from "@/lib/auth.js";
 import { paths } from "@/config/paths.js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { Label } from "../../../components/ui/label";
-import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert.jsx";
+import { AlertCircle, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const login = useLogin({
-    onSuccess: () => navigate(() => paths.app.root.getHref())
-  });
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState(null);
+
+  const login = useLogin({
+    onSuccess: () => {
+      setLoginError(null);
+      console.log("Login Successfully"); // let's debug
+      navigate(paths.app.root.getHref());
+    },
+    onError: (error) => {
+      if (
+        error.message === "Invalid email or password" ||
+        error.message === "Unauthorized" ||
+        error.message === "Bad Request"
+      ) {
+        setLoginError("Invalid email or password.");
+      } else if (
+        error.message === "Internal Server Error" ||
+        error.message === "Failed to fetch"
+      ) {
+        setLoginError("Internal Server Error. Please try again later.");
+      } else {
+        setLoginError(error.message || "Login failed.");
+      }
+    },
+  });
 
   const {
     register,
@@ -33,76 +56,89 @@ export const LoginForm = () => {
     login.mutate({
       email: data.email,
       password: data.password,
-    })
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email" className="flex items-center">
-          <Mail className="w-4 h-4 mr-2" />
-          Email Address
-        </Label>
-        <Input
-          id="email"
-          type="email"
-          {...register("email")}
-          placeholder="example@email.com"
-          className={`${errors.email ? "border-destructive" : ""}`}
-          required
-        />
-        {errors.email && (
-          <span className="text-sm text-destructive">
-            {errors.email.message}
-          </span>
-        )}
-      </div>
+    <>
+      {loginError && (
+        <Alert variant="destructive" className="mb-6 bg-primary/10 border-primary">
+          <AlertCircle className="h-4 w-4 mr-2" />
+          <AlertDescription>{loginError}</AlertDescription>
+        </Alert>
+      )}
 
-      <div className="space-y-2">
-        <Label htmlFor="password" className="flex items-center">
-          <Lock className="w-4 h-4 mr-2" />
-          Password
-        </Label>
-        <div className="relative">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="email" className="flex items-center">
+            <Mail className="w-4 h-4 mr-2" />
+            Email Address
+          </Label>
           <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            {...register("password")}
-            placeholder="Enter Password"
-            className={`${errors.password ? "border-destructive" : ""}`}
+            id="email"
+            type="email"
+            {...register("email")}
+            placeholder="example@email.com"
+            className={`${errors.email ? "border-destructive" : ""}`}
             required
           />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute right-1 top-0.5 px-3 hover:bg-transparent hover:text-primary"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          </Button>
+          {errors.email && (
+            <span className="text-sm text-destructive">
+              {errors.email.message}
+            </span>
+          )}
         </div>
-        {errors.password && (
-          <span className="text-sm text-destructive">
-            {errors.password.message}
-          </span>
-        )}
-      </div>
-      
-      <Button 
-        type="submit"
-        className="w-full h-12 bg-rose-700 hover:bg-rose-600" 
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Logging In...
-          </>
-        ) : (
-          <>Log In</>
-        )}
-      </Button>
-    </form>
+
+        <div className="space-y-2">
+          <Label htmlFor="password" className="flex items-center">
+            <Lock className="w-4 h-4 mr-2" />
+            Password
+          </Label>
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              {...register("password")}
+              placeholder="Enter Password"
+              className={`${errors.password ? "border-destructive" : ""}`}
+              required
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="absolute right-1 top-0.5 px-3 hover:bg-transparent hover:text-primary"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
+          {errors.password && (
+            <span className="text-sm text-destructive">
+              {errors.password.message}
+            </span>
+          )}
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full h-12 bg-rose-700 hover:bg-rose-600"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Logging In...
+            </>
+          ) : (
+            <>Log In</>
+          )}
+        </Button>
+      </form>
+    </>
   );
 };
