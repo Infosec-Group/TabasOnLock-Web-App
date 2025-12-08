@@ -5,6 +5,7 @@ import {
   getCustomerBookings,
   updateBooking,
   deleteBooking,
+  cancelBooking,
 } from "../controllers/bookingController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -16,6 +17,7 @@ const router = Router();
 router.post("/", protect, createBooking);
 router.get("/customer/:customerId", protect, getCustomerBookings);
 router.put("/:bookingId", protect, updateBooking);
+router.patch("/:bookingId/cancel", protect, cancelBooking);
 router.delete("/:bookingId", protect, deleteBooking);
 
 export default router;

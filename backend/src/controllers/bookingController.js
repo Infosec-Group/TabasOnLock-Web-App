@@ -68,22 +68,26 @@ export const getCustomerBookings = asyncHandler(async (req, res) => {
     .lean();
 
   const formattedBookings = bookings.map((booking) => {
-    const formattedBooking = { ...booking };
-
-    const formattedCustomer = {
-      id: formattedBooking.customerId._id,
-      ...formattedBooking.customerId,
+    return {
+      id: booking._id.toString(),
+      date: booking.date,
+      time: booking.time,
+      status: booking.status,
+      price: booking.price,
+      stylist: {
+        id: booking.stylistId,
+        name: booking.stylistName,
+        specialty: booking.stylistSpecialty,
+      },
+      customer: {
+        firstName: booking.customerFirstName,
+        lastName: booking.customerLastName,
+        email: booking.customerEmail,
+        phoneNumber: booking.customerPhone,
+      },
+      createdAt: booking.createdAt,
+      updatedAt: booking.updatedAt,
     };
-
-    delete formattedCustomer._id;
-    delete formattedCustomer.__v;
-    delete formattedBooking.customerId;
-    formattedBooking.id = formattedBooking._id;
-    delete formattedBooking._id;
-    delete formattedBooking.__v;
-    formattedBooking.customer = formattedCustomer;
-
-    return formattedBooking;
   });
 
   res.json(formattedBookings);
@@ -106,6 +110,23 @@ export const updateBooking = asyncHandler(async (req, res) => {
   delete bookingData._id;
   delete bookingData.__v;
   res.json(bookingData);
+});
+
+export const cancelBooking = asyncHandler(async (request, response) => {
+  const booking = await Booking.findById(request.params.bookingId);
+
+  if(!booking) return response.status(404).json({ message: "Booking not found" });
+
+  if(booking.customerId.toString() !== request.user.id) {
+    return response
+      .status(403)
+      .json({ message: "Not authorized to cancel this booking" });
+  }
+
+  booking.status = "cancelled";
+  await booking.save();
+
+  response.json({ message: "Booking cancelled successfully" });
 });
 
 export const deleteBooking = asyncHandler(async (req, res) => {
