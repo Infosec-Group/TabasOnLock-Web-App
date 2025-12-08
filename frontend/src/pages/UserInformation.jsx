@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { paths } from "@/config/paths";
 import { useBookingStore } from "@/stores/useBookingStore";
 import { 
   Card,
@@ -11,11 +13,17 @@ import StylistInfoPanel from "@/components/StylistInfoPanel";
 import { UserInformationForm } from "@/features/bookings/components/UserInformationForm";
 
 export default function UserInformation() {
-  const setCurrentStep = useBookingStore((state) => state.setCurrentStep);
+  const navigate = useNavigate();
+  const { selectedStylist, setCurrentStep } = useBookingStore();
 
   useEffect(() => {
+    if (!selectedStylist) {
+      navigate(paths.app.stylists.getHref(), { replace: true });
+    }
     setCurrentStep(1);
-  }, [setCurrentStep]);
+  }, [setCurrentStep, selectedStylist, navigate]);
+
+  if (!selectedStylist) return null;
 
   return (
     <div className="max-w-6xl mx-auto">

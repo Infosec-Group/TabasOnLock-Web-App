@@ -36,26 +36,39 @@ export default function BookReservation() {
     setSelectedDate,
     setSelectedTime,
     userInfo,
-    addBooking,
-    reset: resetBooking
   } = useBookingStore();
 
+  useEffect(() => {
+    if (!selectedStylist) {
+      toast.error("Please select a stylist first");
+      navigate(paths.app.stylists.getHref(), { replace: true });
+      return;
+    }
+    if (!userInfo) {
+      toast.error("Please enter your information first");
+      navigate(paths.app.booking.getHref(), { replace: true });
+      return;
+    }
+    setCurrentStep(2);
+  }, [selectedStylist, userInfo, navigate, setCurrentStep]);
+
+  // Don't render if missing stylist
+  if (!selectedStylist || !userInfo) {
+    return null;
+  }
+
   const createBooking = useCreateBooking({
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Booking confirmed successfully!");
       setShowConfirmDialog(false);
       setCurrentStep(3);
-      resetBooking();
       navigate(paths.app.success.getHref());
     },
     onError: (error) => {
       toast.error(error.message || "Failed to create booking");
+      setShowConfirmDialog(false);
     }
   });
-
-  useEffect(() => {
-    setCurrentStep(2);
-  }, [setCurrentStep]);
 
   // Fetch available slots when date changes
   useEffect(() => {
@@ -88,7 +101,14 @@ export default function BookReservation() {
       const bookingData = {
         date: selectedDate.toISOString().split("T")[0],
         time: selectedTime,
-        stylistId: selectedStylist.id || selectedStylist.name,
+        stylistId: selectedStylist.id,
+        stylistName: selectedStylist.name,
+        stylistSpecialty: selectedStylist.specialty,
+        price: selectedStylist.price,
+        customerFirstName: userInfo.firstName,
+        customerLastName: userInfo.lastName,
+        customerEmail: userInfo.email,
+        customerPhone: userInfo.phoneNumber,
       };
 
       createBooking.mutate(bookingData);
@@ -197,10 +217,10 @@ export default function BookReservation() {
                 <p><strong>Service:</strong> {selectedStylist?.specialty}</p>
                 <p><strong>Date:</strong> {selectedDate && formatDate(selectedDate)}</p>
                 <p><strong>Time:</strong> {selectedTime}</p>
-                <p><strong>Customer:</strong> {userInfo?.first_name} {userInfo?.last_name}</p>
-                <p><strong>Phone:</strong> {userInfo?.phone_number}</p>
+                <p><strong>Customer:</strong> {userInfo?.firstName} {userInfo?.lastName}</p>
+                <p><strong>Phone:</strong> {userInfo?.phoneNumber}</p>
                 <p><strong>Email:</strong> {userInfo?.email}</p>
-                <p><strong>Price:</strong> ₱{selectedStylist.price}</p>
+                <p><strong>Price:</strong> ₱{selectedStylist?.price}</p>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
