@@ -39,6 +39,21 @@ export const useCancelBooking = ({ onSuccess, onError }) => {
   });
 };
 
+export const useRescheduleBooking = ({ onSuccess, onError }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ bookingId, date, time }) => rescheduleBooking(bookingId, date, time),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["bookings"]);
+      onSuccess?.(data);
+    },
+    onError: (error) => {
+      onError?.(error);
+    }
+  });
+};
+
 export const useDeleteBooking = ({ onSuccess, onError }) => {
   const queryClient = useQueryClient();
 
@@ -62,8 +77,8 @@ const getCustomerBookingId = (customerId) => {
   return api.get(`/bookings/customer/${customerId}`);
 }
 
-const updateBooking = (bookingId, bookingData) => {
-  return api.put(`/bookings/${bookingId}`, bookingData);
+const rescheduleBooking = (bookingId, date, time) => {
+  return api.patch(`/bookings/${bookingId}/reschedule`, { date, time });
 }
 
 const cancelBooking = (bookingId) => {

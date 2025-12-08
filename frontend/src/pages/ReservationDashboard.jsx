@@ -1,6 +1,16 @@
 import { useNavigate } from "react-router";
 import { paths } from "@/config/paths";
+import { useUser } from "@/lib/auth";
+import { useBookingStore } from "@/stores/useBookingStore";
+import {
+  useCancelBooking,
+  useCustomerBookings,
+  useDeleteBooking,
+} from "@/features/bookings/api/bookingApi";
+import { toast } from "sonner";
 import { formatDate } from "@/utils/utils";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,9 +22,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import {
   ArrowLeft,
   Calendar,
@@ -25,13 +38,6 @@ import {
   Trash2,
   User,
 } from "lucide-react";
-import { useUser } from "@/lib/auth";
-import {
-  useCancelBooking,
-  useCustomerBookings,
-  useDeleteBooking,
-} from "@/features/bookings/api/bookingApi";
-import { toast } from "sonner";
 
 export default function ReservationDashboard() {
   const navigate = useNavigate();
@@ -42,6 +48,39 @@ export default function ReservationDashboard() {
     isError,
     error,
   } = useCustomerBookings(user?.id);
+
+  const { 
+    setSelectedStylist, 
+    setSelectedDate, 
+    setSelectedTime, 
+    setUserInfo,
+    setReschedulingBookingId,
+    setCurrentStep
+  } = useBookingStore();
+
+  const handleReschedule = (reservation) => {
+    setReschedulingBookingId(reservation.id);
+
+    setSelectedStylist({
+      id: reservation.stylist.id,
+      name: reservation.stylist.name,
+      specialty: reservation.stylist.specialty,
+      price: reservation.price
+    });
+
+    setUserInfo({
+      firstName: reservation.customer.firstName,
+      lastName: reservation.customer.lastName,
+      email: reservation.customer.email,
+      phoneNumber: reservation.customer.phoneNumber
+    });
+
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setCurrentStep(2);
+    
+    navigate(paths.app.reservation.getHref());
+  };
 
   const cancelBooking = useCancelBooking({
     onSuccess: () => {
@@ -229,6 +268,7 @@ export default function ReservationDashboard() {
                     size="sm"
                     disabled={reservation.status === "confirmed"}
                     className="flex items-center"
+                    onClick={() => handleReschedule(reservation)}
                   >
                     <Edit className="w-4 h-4 mr-2" />
                     {reservation.status === "confirmed"

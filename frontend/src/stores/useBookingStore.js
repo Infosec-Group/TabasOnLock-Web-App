@@ -10,12 +10,14 @@ export const useBookingStore = create(
       selectedTime: null,
       userInfo: null,
       bookings: [],
+      rescheduleBookingId: null,
 
       setCurrentStep: (step) => set({ currentStep: step }),
       setSelectedStylist: (stylist) => set({ selectedStylist: stylist }),
       setSelectedDate: (date) => set({ selectedDate: date }),
       setSelectedTime: (time) => set({ selectedTime: time }),
       setUserInfo: (info) => set({ userInfo: info }),
+      setReschedulingBookingId: (id) => set({ reschedulingBookingId: id }),
 
       addBooking: (booking) =>
         set((state) => ({
@@ -44,6 +46,7 @@ export const useBookingStore = create(
           selectedDate: undefined,
           selectedTime: null,
           userInfo: null,
+          rescheduleBookingId: null,
         }),
     }),
     {
@@ -54,6 +57,7 @@ export const useBookingStore = create(
         selectedDate: state.selectedDate?.toISOString(),
         selectedTime: state.selectedTime,
         userInfo: state.userInfo,
+        reschedulingBookingId: state.reschedulingBookingId,
       }),
       onRehydrateStorage: () => (state) => {
         if(state?.selectedDate) {

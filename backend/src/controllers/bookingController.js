@@ -22,6 +22,7 @@ export const createBooking = asyncHandler(async (req, res) => {
     time: time,
     status: { $ne: "cancelled" }
   });
+
   if (existingBooking) {
     return res.status(409).json({
       message: `Booking conflict: ${stylistId} is already booked at ${time} on ${date}.`,
@@ -93,23 +94,58 @@ export const getCustomerBookings = asyncHandler(async (req, res) => {
   res.json(formattedBookings);
 });
 
-export const updateBooking = asyncHandler(async (req, res) => {
-  const booking = await Booking.findById(req.params.bookingId);
-  if (!booking) {
-    return res.status(404).json({ message: "Booking not found" });
-  }
-  if (booking.customerId.toString() !== req.user.id) {
-    return res
+export const rescheduleBooking = asyncHandler(async (request, response) => {
+  const { date, time } = request.body;
+  const booking = await Booking.findById(request.params.bookingId);
+
+  if(!booking) return response.status(404).json({ message: "Booking not found." });
+
+  if (booking.customerId.toString() !== request.user.id) {
+    return response
       .status(403)
-      .json({ message: "Not authorized to update this booking" });
+      .json({ message: "Not authorized to reschedule this booking" });
   }
-  Object.assign(booking, req.body);
+
+  if (booking.status !== "cancelled") {
+    return res
+      .status(400)
+      .json({ message: "Only cancelled bookings can be rescheduled" });
+  }
+
+  const existingBooking = await Booking.findOne({
+    stylistId: booking.stylistId,
+    date: date,
+    time: time,
+    status: { $ne: "cancelled" },
+    _id: { $ne: booking._id },
+  });
+
+  if(existingBooking) {
+    return response.status(409).json({
+      message: `Booking conflict: This stylist is already booked at ${time} on ${date}.`,
+    })
+  }
+
+  booking.date = date;
+  booking.time = time;
+  booking.status = "confirmed"
   const updatedBooking = await booking.save();
+
+  await updatedBooking.populate("customerId", "firstName lastName email");
+
   const bookingData = updatedBooking.toObject();
+  bookingData.customer = {
+    id: bookingData.customerId._id,
+    firstName: bookingData.customerId.firstName,
+    lastName: bookingData.customerId.lastName,
+    email: bookingData.customerId.email,
+  };
   bookingData.id = bookingData._id;
   delete bookingData._id;
   delete bookingData.__v;
-  res.json(bookingData);
+  delete bookingData.customerId;
+
+  response.json(bookingData);
 });
 
 export const cancelBooking = asyncHandler(async (request, response) => {
