@@ -3,7 +3,10 @@ import { useNavigate } from "react-router";
 import { formatDate, getAvailableSlots } from "@/utils/utils";
 import { paths } from "@/config/paths";
 import { useUser } from "@/lib/auth";
-import { useCreateBooking } from "@/features/bookings/api/bookingApi";
+import {
+  useCreateBooking,
+  useRescheduleBooking,
+} from "@/features/bookings/api/bookingApi";
 import { toast } from "sonner";
 import { useBookingStore } from "@/stores/useBookingStore";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,15 +14,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProgressBar from "@/components/ProgressBar";
 import { Button } from "@/components/ui/button";
 import StylistInfoPanel from "@/components/StylistInfoPanel";
-import { 
+import {
   AlertDialog,
-  AlertDialogAction, 
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, 
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle 
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { CalendarIcon, Clock } from "lucide-react";
 
@@ -27,7 +30,6 @@ export default function BookReservation() {
   const navigate = useNavigate();
   const [availableSlots, setAvailableSlots] = useState([]);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const { data: user } = useUser();
   const {
     setCurrentStep,
     selectedStylist,
@@ -36,6 +38,8 @@ export default function BookReservation() {
     setSelectedDate,
     setSelectedTime,
     userInfo,
+    reschedulingBookingId,
+    setReschedulingBookingId,
   } = useBookingStore();
 
   useEffect(() => {
@@ -67,7 +71,20 @@ export default function BookReservation() {
     onError: (error) => {
       toast.error(error.message || "Failed to create booking");
       setShowConfirmDialog(false);
-    }
+    },
+  });
+
+  const rescheduleBooking = useRescheduleBooking({
+    onSuccess: (data) => {
+      toast.success("Booking rescheduled successfully!");
+      setShowConfirmDialog(false);
+      setReschedulingBookingId(null);
+      navigate(paths.app.reservationList.getHref());
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to reschedule booking");
+      setShowConfirmDialog(false);
+    },
   });
 
   // Fetch available slots when date changes
@@ -91,27 +108,37 @@ export default function BookReservation() {
   };
 
   const handleBookNow = () => {
-    if(selectedDate && selectedTime) {
+    if (selectedDate && selectedTime) {
       setShowConfirmDialog(true);
     }
   };
 
   const handleConfirmBooking = () => {
-    if(selectedDate && selectedTime && selectedStylist) {
-      const bookingData = {
-        date: selectedDate.toISOString().split("T")[0],
-        time: selectedTime,
-        stylistId: selectedStylist.id,
-        stylistName: selectedStylist.name,
-        stylistSpecialty: selectedStylist.specialty,
-        price: selectedStylist.price,
-        customerFirstName: userInfo.firstName,
-        customerLastName: userInfo.lastName,
-        customerEmail: userInfo.email,
-        customerPhone: userInfo.phoneNumber,
-      };
+    if (selectedDate && selectedTime && selectedStylist && userInfo) {
+      const dateStr = selectedDate.toISOString().split("T")[0];
 
-      createBooking.mutate(bookingData);
+      if (reschedulingBookingId) {
+        rescheduleBooking.mutate({
+          bookingId: reschedulingBookingId,
+          date: dateStr,
+          time: selectedTime,
+        });
+      } else {
+        const bookingData = {
+          date: dateStr,
+          time: selectedTime,
+          stylistId: selectedStylist.id,
+          stylistName: selectedStylist.name,
+          stylistSpecialty: selectedStylist.specialty,
+          price: selectedStylist.price,
+          customerFirstName: userInfo.firstName,
+          customerLastName: userInfo.lastName,
+          customerEmail: userInfo.email,
+          customerPhone: userInfo.phoneNumber,
+        };
+
+        createBooking.mutate(bookingData);
+      }
     }
   };
 
@@ -119,6 +146,15 @@ export default function BookReservation() {
     <>
       <div className="max-w-7xl mx-auto">
         <ProgressBar />
+
+        {/* Show reschedule indicator */}
+        {reschedulingBookingId && (
+          <div className="mb-4 p-4 bg-linear-to-r from-rose-800 to-primary/20 border border-primary rounded-lg">
+            <p className="text-sm font-medium">
+              Rescheduling appointment with {selectedStylist?.name}
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Left Side - Date and Time Selection */}
@@ -209,28 +245,59 @@ export default function BookReservation() {
       <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Your Appointment</AlertDialogTitle>
+            <AlertDialogTitle>
+              {reschedulingBookingId ? "Confirm Reschedule" : "Confirm Your Booking"}
+            </AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
               <p>Please confirm your appointment details:</p>
               <div className=" border p-4 rounded-lg space-y-2 text-sm">
-                <p><strong>Stylist:</strong> {selectedStylist?.name}</p>
-                <p><strong>Service:</strong> {selectedStylist?.specialty}</p>
-                <p><strong>Date:</strong> {selectedDate && formatDate(selectedDate)}</p>
-                <p><strong>Time:</strong> {selectedTime}</p>
-                <p><strong>Customer:</strong> {userInfo?.firstName} {userInfo?.lastName}</p>
-                <p><strong>Phone:</strong> {userInfo?.phoneNumber}</p>
-                <p><strong>Email:</strong> {userInfo?.email}</p>
-                <p><strong>Price:</strong> ₱{selectedStylist?.price}</p>
+                <p>
+                  <strong>Stylist:</strong> {selectedStylist?.name}
+                </p>
+                <p>
+                  <strong>Service:</strong> {selectedStylist?.specialty}
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {selectedDate && formatDate(selectedDate)}
+                </p>
+                <p>
+                  <strong>Time:</strong> {selectedTime}
+                </p>
+                <p>
+                  <strong>Customer:</strong> {userInfo?.firstName}{" "}
+                  {userInfo?.lastName}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {userInfo?.phoneNumber}
+                </p>
+                <p>
+                  <strong>Email:</strong> {userInfo?.email}
+                </p>
+                <p>
+                  <strong>Price:</strong> ₱{selectedStylist?.price}
+                </p>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel
+              disabled={createBooking.isPending || rescheduleBooking.isPending}
+            >
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmBooking}
-              disabled={!selectedDate || !selectedTime || createBooking.isPending}
+              disabled={
+                !selectedDate || !selectedTime || createBooking.isPending
+              }
             >
-              {createBooking.isPending ? "Confirming..." : "Confirm Booking"}
+              {createBooking.isPending || rescheduleBooking.isPending 
+                ? "Processing..." 
+                : reschedulingBookingId 
+                  ? "Confirm Reschedule" 
+                  : "Confirm Booking"
+              }
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
