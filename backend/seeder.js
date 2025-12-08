@@ -34,7 +34,8 @@ const seedCustomer = async () => {
       phoneNumber: "1234567890",
       passwordHash: passHash,
     });
-    customer.save();
+    
+    await customer.save();
 
     console.log("Seeded customer:", customer);
     process.exit();
