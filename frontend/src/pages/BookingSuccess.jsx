@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { paths } from "@/config/paths";
 import { useBookingStore } from "@/stores/useBookingStore";
@@ -15,7 +16,22 @@ export default function BookingSuccess() {
     selectedDate,
     selectedTime,
     userInfo,
+    reset,
   } = useBookingStore();
+
+  const handleNavigateAway = (path) => {
+    reset(); // Clear booking state
+    navigate(path);
+  };
+
+  if (!selectedStylist || !selectedDate || !selectedTime || !userInfo) {
+    return (
+      <div className="max-w-4xl mx-auto text-center py-24">
+        <h2 className="text-2xl font-bold mb-4">No booking details found.</h2>
+        <Button onClick={() => navigate("/tabas")}>Back to Main Page</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -32,7 +48,7 @@ export default function BookingSuccess() {
           </div>
 
           {/* Booking Summary */}
-          <div className="max-w-md mx-auto mb-8">
+          <div className="max-w-md mx-auto mb-8 border rounded-md">
             <div className="p-6">
               <h3 className="text-lg font-semibold text-dark-fg mb-4">Appointment Summary</h3>
               <div className="space-y-2 text-sm text-dark-secondary-fg">
@@ -54,7 +70,7 @@ export default function BookingSuccess() {
                 </div>
                 <div className="flex justify-between">
                   <span>Customer:</span>
-                  <span className="font-medium">{userInfo?.first_name} {userInfo?.last_name}</span>
+                  <span className="font-medium">{userInfo?.firstName} {userInfo?.lastName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Price:</span>
@@ -75,7 +91,7 @@ export default function BookingSuccess() {
           {/* Action Buttons */}
           <div className=" mt-8 flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <Button
-              onClick={() => navigate(paths.app.reservationList.getHref())}
+              onClick={() => handleNavigateAway(paths.app.reservationList.getHref())}
               className="flex items-center justify-center"
             >
               <Calendar className="w-4 h-4 mr-2" />

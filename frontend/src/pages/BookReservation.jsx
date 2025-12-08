@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { formatDate, getAvailableSlots } from "@/utils/utils";
 import { paths } from "@/config/paths";
+import { useUser } from "@/lib/auth";
+import { useCreateBooking } from "@/features/bookings/api/bookingApi";
+import { toast } from "sonner";
 import { useBookingStore } from "@/stores/useBookingStore";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +25,9 @@ import { CalendarIcon, Clock } from "lucide-react";
 
 export default function BookReservation() {
   const navigate = useNavigate();
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const { data: user } = useUser();
   const {
     setCurrentStep,
     selectedStylist,
@@ -30,15 +36,39 @@ export default function BookReservation() {
     setSelectedDate,
     setSelectedTime,
     userInfo,
-    addBooking,
   } = useBookingStore();
 
-  const [availableSlots, setAvailableSlots] = useState([]);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-
   useEffect(() => {
+    if (!selectedStylist) {
+      toast.error("Please select a stylist first");
+      navigate(paths.app.stylists.getHref(), { replace: true });
+      return;
+    }
+    if (!userInfo) {
+      toast.error("Please enter your information first");
+      navigate(paths.app.booking.getHref(), { replace: true });
+      return;
+    }
     setCurrentStep(2);
-  }, [setCurrentStep]);
+  }, [selectedStylist, userInfo, navigate, setCurrentStep]);
+
+  // Don't render if missing stylist
+  if (!selectedStylist || !userInfo) {
+    return null;
+  }
+
+  const createBooking = useCreateBooking({
+    onSuccess: () => {
+      toast.success("Booking confirmed successfully!");
+      setShowConfirmDialog(false);
+      setCurrentStep(3);
+      navigate(paths.app.success.getHref());
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to create booking");
+      setShowConfirmDialog(false);
+    }
+  });
 
   // Fetch available slots when date changes
   useEffect(() => {
@@ -67,25 +97,23 @@ export default function BookReservation() {
   };
 
   const handleConfirmBooking = () => {
-    if(selectedDate && selectedTime) {
-      const dateStr = selectedDate.toISOString().split("T")[0];
-      
-      const booking = {
-        stylist: selectedStylist,
-        date: dateStr,
+    if(selectedDate && selectedTime && selectedStylist) {
+      const bookingData = {
+        date: selectedDate.toISOString().split("T")[0],
         time: selectedTime,
-        customer: userInfo,
-        price: selectedStylist.price
+        stylistId: selectedStylist.id,
+        stylistName: selectedStylist.name,
+        stylistSpecialty: selectedStylist.specialty,
+        price: selectedStylist.price,
+        customerFirstName: userInfo.firstName,
+        customerLastName: userInfo.lastName,
+        customerEmail: userInfo.email,
+        customerPhone: userInfo.phoneNumber,
       };
 
-      addBooking(booking);
-
-      setShowConfirmDialog(false);
-
-      setCurrentStep(3);
-      navigate(paths.app.success.getHref());
+      createBooking.mutate(bookingData);
     }
-  }
+  };
 
   return (
     <>
@@ -158,7 +186,7 @@ export default function BookReservation() {
             <div className="flex space-x-4">
               <Button
                 variant="outline"
-                onClick={() => navigate("/booking")}
+                onClick={() => window.history.back()}
                 className="flex-1 h-12"
               >
                 Back
@@ -189,10 +217,10 @@ export default function BookReservation() {
                 <p><strong>Service:</strong> {selectedStylist?.specialty}</p>
                 <p><strong>Date:</strong> {selectedDate && formatDate(selectedDate)}</p>
                 <p><strong>Time:</strong> {selectedTime}</p>
-                <p><strong>Customer:</strong> {userInfo?.first_name} {userInfo?.last_name}</p>
-                <p><strong>Phone:</strong> {userInfo?.phone_number}</p>
+                <p><strong>Customer:</strong> {userInfo?.firstName} {userInfo?.lastName}</p>
+                <p><strong>Phone:</strong> {userInfo?.phoneNumber}</p>
                 <p><strong>Email:</strong> {userInfo?.email}</p>
-                <p><strong>Price:</strong> ₱{selectedStylist.price}</p>
+                <p><strong>Price:</strong> ₱{selectedStylist?.price}</p>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -200,8 +228,9 @@ export default function BookReservation() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmBooking}
+              disabled={!selectedDate || !selectedTime || createBooking.isPending}
             >
-              Confirm Booking
+              {createBooking.isPending ? "Confirming..." : "Confirm Booking"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

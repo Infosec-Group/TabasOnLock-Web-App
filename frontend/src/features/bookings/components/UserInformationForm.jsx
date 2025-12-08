@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Label } from "./ui/label";
-import { userInfoSchema } from "../schemas/schemas";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Link, useNavigate } from "react-router";
-import { paths } from "../config/paths";
+import { paths } from "@/config/paths";
 import { useBookingStore } from "@/stores/useBookingStore";
+import { Label } from "@/components/ui/label";
+import { userInfoSchema } from "@/schemas/schemas";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router";
 
 export const UserInformationForm = () => {
   const navigate = useNavigate();
@@ -20,9 +20,9 @@ export const UserInformationForm = () => {
   } = useForm({
     resolver: yupResolver(userInfoSchema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
-      phone_number: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
       email: "",
     },
   });
@@ -42,59 +42,59 @@ export const UserInformationForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="first_name" className="flex items-center font-medium">
+        <Label htmlFor="firstName" className="flex items-center font-medium">
           First Name <span className="text-destructive">*</span>
         </Label>
         <Input
-          {...register("first_name")}
-          id="first_name"
+          {...register("firstName")}
+          id="firstName"
           type="text"
           placeholder="Enter your first name"
           className={`bg-input ${
-            errors.first_name ? "border-destructive" : ""
+            errors.firstName ? "border-destructive" : ""
           }`}
         />
-        {errors.first_name && (
+        {errors.firstName && (
           <span className="text-sm text-destructive">
-            {errors.first_name.message}
+            {errors.firstName.message}
           </span>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="last_name" className="flex items-center font-medium">
+        <Label htmlFor="lastName" className="flex items-center font-medium">
           Last Name <span className="text-destructive">*</span>
         </Label>
         <Input
-          {...register("last_name")}
-          id="last_name"
+          {...register("lastName")}
+          id="lastName"
           type="text"
           placeholder="Enter your last name"
-          className={`bg-input ${errors.last_name ? "border-destructive" : ""}`}
+          className={`bg-input ${errors.lastName ? "border-destructive" : ""}`}
         />
-        {errors.last_name && (
+        {errors.lastName && (
           <span className="text-sm text-destructive">
-            {errors.last_name.message}
+            {errors.lastName.message}
           </span>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phone_number" className="flex items-center font-medium">
+        <Label htmlFor="phoneNumber" className="flex items-center font-medium">
           Phone Number <span className="text-destructive">*</span>
         </Label>
         <Input
-          {...register("phone_number")}
-          id="phone_number"
+          {...register("phoneNumber")}
+          id="phoneNumber"
           type="tel"
           placeholder="09123456789"
           className={`bg-input ${
-            errors.phone_number ? "border-destructive" : ""
+            errors.phoneNumber ? "border-destructive" : ""
           }`}
         />
-        {errors.phone_number && (
+        {errors.phoneNumber && (
           <span className="text-sm text-destructive">
-            {errors.phone_number.message}
+            {errors.phoneNumber.message}
           </span>
         )}
       </div>
