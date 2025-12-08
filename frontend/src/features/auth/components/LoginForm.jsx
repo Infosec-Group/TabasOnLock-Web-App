@@ -19,7 +19,6 @@ export const LoginForm = () => {
   const login = useLogin({
     onSuccess: () => {
       setLoginError(null);
-      console.log("Login Successfully"); // let's debug
       navigate(paths.app.root.getHref());
     },
     onError: (error) => {

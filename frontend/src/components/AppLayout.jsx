@@ -1,9 +1,11 @@
 import { Outlet } from "react-router";
+import Navbar from "./Navbar";
 
 export default function AppLayout() {
   return (
-    <div className="min-h-screen px-4 py-2">
-      <main className="">
+    <div className="min-h-screen">
+      <Navbar />
+      <main>
         <Outlet />
       </main>
     </div>

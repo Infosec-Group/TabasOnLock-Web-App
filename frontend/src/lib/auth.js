@@ -36,15 +36,18 @@ export const useLogin = ({ onSuccess, onError } = {}) => {
   });
 };
 
-export const useSignup = ({ onSuccess } = {}) => {
+export const useSignup = ({ onSuccess, onError } = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: signupRequest,
     onSuccess: (response) => {
-      localStorage.setItem("access_token", response.token);
+      // localStorage.setItem("access_token", response.token);
       queryClient.invalidateQueries(userQueryKey);
       onSuccess?.();
+    },
+    onError: (error) => {
+      onError?.(error);
     },
   });
 };
