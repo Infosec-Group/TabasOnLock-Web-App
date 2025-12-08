@@ -3,12 +3,24 @@ import Booking from "../models/Booking.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 
 export const createBooking = asyncHandler(async (req, res) => {
-  const { date, time, stylistId } = req.body;
+  const { 
+    date,
+    time,
+    stylistId,
+    stylistName,
+    stylistSpecialty,
+    price,
+    customerFirstName,
+    customerLastName,
+    customerEmail,
+    customerPhone
+  } = req.body;
 
   const existingBooking = await Booking.findOne({
     stylistId: stylistId,
     date: date,
     time: time,
+    status: { $ne: "cancelled" }
   });
   if (existingBooking) {
     return res.status(409).json({
@@ -17,21 +29,33 @@ export const createBooking = asyncHandler(async (req, res) => {
   }
 
   const newBooking = new Booking({
-    ...req.body,
+    date,
+    time,
+    stylistId,
+    stylistName,
+    stylistSpecialty,
+    price,
+    customerFirstName,
+    customerLastName,
+    customerEmail,
+    customerPhone,
     customerId: req.user.id,
   });
+
   const savedBooking = await newBooking.save();
   await savedBooking.populate("customerId", "firstName lastName email");
 
   const savedBookingData = savedBooking.toObject();
-  savedBookingData.customer = savedBookingData.customerId;
-  savedBookingData.customer.id = savedBookingData.customer._id;
+  savedBookingData.customer = {
+    id: savedBookingData.customerId._id,
+    firstName: savedBookingData.customerId.firstName,
+    lastName: savedBookingData.customerId.lastName,
+    email: savedBookingData.customerId.email,
+  };
   savedBookingData.id = savedBookingData._id;
   delete savedBookingData._id;
   delete savedBookingData.__v;
   delete savedBookingData.customerId;
-  delete savedBookingData.customer._id;
-  delete savedBookingData.customer.__v;
 
   res.status(201).json(savedBookingData);
 });
