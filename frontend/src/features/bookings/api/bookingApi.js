@@ -24,6 +24,36 @@ export const useCustomerBookings = (customerId) => {
   });
 };
 
+export const useCancelBooking = ({ onSuccess, onError }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: cancelBooking,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["bookings"]);
+      onSuccess?.(data);
+    },
+    onError: (error) => {
+      onError?.(error);
+    }
+  });
+};
+
+export const useDeleteBooking = ({ onSuccess, onError }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteBooking,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["bookings"]);
+      onSuccess?.(data);
+    },
+    onError: (error) => {
+      onError?.(error);
+    }
+  });
+};
+
 const createBooking = (bookingData) => {
   return api.post("/bookings", bookingData);
 }
@@ -34,6 +64,10 @@ const getCustomerBookingId = (customerId) => {
 
 const updateBooking = (bookingId, bookingData) => {
   return api.put(`/bookings/${bookingId}`, bookingData);
+}
+
+const cancelBooking = (bookingId) => {
+  return api.patch(`/bookings/${bookingId}/cancel`)
 }
 
 const deleteBooking = (bookingId) => {

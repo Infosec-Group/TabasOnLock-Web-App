@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router";
 import { paths } from "@/config/paths";
-import { useBookingStore } from "@/stores/useBookingStore";
 import { formatDate } from "@/utils/utils";
 import {
   AlertDialog,
@@ -26,28 +25,88 @@ import {
   Trash2,
   User,
 } from "lucide-react";
+import { useUser } from "@/lib/auth";
+import {
+  useCancelBooking,
+  useCustomerBookings,
+  useDeleteBooking,
+} from "@/features/bookings/api/bookingApi";
+import { toast } from "sonner";
 
 export default function ReservationDashboard() {
   const navigate = useNavigate();
-  const { bookings, cancelBooking } = useBookingStore();
+  const { data: user, isLoading: userLoading } = useUser();
+  const {
+    data: bookings = [],
+    isLoading: bookingsLoading,
+    isError,
+    error,
+  } = useCustomerBookings(user?.id);
+
+  const cancelBooking = useCancelBooking({
+    onSuccess: () => {
+      toast.success("Booking cancelled successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to cancel booking");
+    },
+  });
+
+  const deleteBooking = useDeleteBooking({
+    onSuccess: () => {
+      toast.success("Booking deleted successfully!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete booking");
+    },
+  });
 
   const activeBookings = bookings.filter(
-    (booking) => booking.status === "confirmed"
+    (booking) =>
+      booking.status === "confirmed" ||
+      booking.status === "cancelled" ||
+      booking.status === "pending"
   );
 
-  const handleCancelReservation = () => {
-    //
-  }
+  const handleCancelReservation = (bookingId) => {
+    cancelBooking.mutate(bookingId);
+  };
+
+  const handleDeleteReservation = (bookingId) => {
+    deleteBooking.mutate(bookingId);
+  };
 
   const getStatusBadge = (status) => {
-    return status === "confirmed" ? (
-      <Badge className="bg-green-600">Confirmed</Badge>
-    ) : (
+    if (status === "confirmed") {
+      return <Badge className="bg-green-600">Confirmed</Badge>;
+    }
+    if (status === "cancelled") {
+      return <Badge className="bg-destructive">Cancelled</Badge>;
+    }
+    return (
       <Badge variant="secondary" className="bg-amber-400 text-amber-900">
         Pending
       </Badge>
     );
   };
+
+  if (userLoading || bookingsLoading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center">Loading your reservations...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center text-destructive">
+          Error loading reservations: {error.message}
+        </div>
+      </div>
+    );
+  }
 
   if (activeBookings.length === 0) {
     return (
@@ -149,13 +208,13 @@ export default function ReservationDashboard() {
                     <div className="flex items-center text-sm text-dark-secondary-fg">
                       <User className="w-4 h-4 mr-2" />
                       <span>
-                        {reservation.customer.first_name}{" "}
-                        {reservation.customer.last_name}
+                        {reservation.customer.firstName}{" "}
+                        {reservation.customer.lastName}
                       </span>
                     </div>
                     <div className="flex items-center text-sm text-dark-secondary-fg">
                       <Phone className="w-4 h-4 mr-2" />
-                      {reservation.customer.phone_number}
+                      {reservation.customer.phoneNumber}
                     </div>
                     <div className="flex items-center text-sm text-dark-secondary-fg">
                       <Mail className="w-4 h-4 mr-2" />
@@ -177,38 +236,85 @@ export default function ReservationDashboard() {
                       : "Reschedule"}
                   </Button>
 
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center text-destructive hover:text-destructive/90 hover:bg-destructive/10"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Cancel
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Cancel Reservation</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to cancel your appointment with{" "}
-                          {reservation.stylist.name} on{" "}
-                          {formatDate(bookingDate)} at {reservation.time}? 
-                          This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Keep Reservation</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleCancelReservation}
-                          className="bg-destructive hover:bg-destructive/80"
+                  {reservation.status === "cancelled" ? (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete
+                    </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Delete Reservation
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete your appointment
+                            with? Once deleted, you have to book an appointment again.
+                            This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() =>
+                              handleDeleteReservation(reservation.id)
+                            }
+                            className="bg-destructive hover:bg-destructive/80"
+                          >
+                            Delete Appointment
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  ) : (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                          disabled={cancelBooking.isPending}
                         >
-                          Cancel Appointment
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Cancel Reservation
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to cancel your appointment
+                            with {reservation.stylist.name} on{" "}
+                            {formatDate(bookingDate)} at {reservation.time}?
+                            This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>
+                            Keep Reservation
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() =>
+                              handleCancelReservation(reservation.id)
+                            }
+                            className="bg-destructive hover:bg-destructive/80"
+                          >
+                            Cancel Appointment
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               </CardContent>
             </Card>
